@@ -1,6 +1,7 @@
 import fs from "node:fs/promises";
 import process from "node:process";
 import util from "node:util";
+import { Cron } from "croner";
 import { cyan, gray, red, yellow } from "kleur/colors";
 import {
 	GoogleGenerativeAI,
@@ -68,8 +69,8 @@ const bot = new Bot({
 	channels: ["Gladd", "xiBread_"],
 	commands: [
 		createBotCommand("ai", exec, {
-			globalCooldown: 15,
-			userCooldown: 30,
+			globalCooldown: 10,
+			userCooldown: 20,
 		}),
 	],
 });
