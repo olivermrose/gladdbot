@@ -45,9 +45,9 @@ export function formatRatings(ratings: SafetyRating[]) {
 	}
 
 	return [
-		`    - Dangerous content: ${getProbability("DANGER")}`,
-		`    - Harassment: ${getProbability("HARASS")}`,
-		`    - Hate speech: ${getProbability("HATE")}`,
-		`    - Sexually explicit: ${getProbability("SEXUAL")}`,
+		`\t- Dangerous content: ${getProbability("DANGER")}`,
+		`\t- Harassment: ${getProbability("HARASS")}`,
+		`\t- Hate speech: ${getProbability("HATE")}`,
+		`\t- Sexually explicit: ${getProbability("SEXUAL")}`,
 	].join("\n");
 }

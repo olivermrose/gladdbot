@@ -91,18 +91,13 @@ async function exec(params: string[], { reply, userDisplayName: user }: BotComma
 		const rawText = response.text();
 		const sanitized = sanitize(rawText, { limit: MAX_OUTPUT_LENGTH, emoteList });
 
-		if (!sanitized) {
-			console.log(`${gray("[SYSTEM]")} Message failed to send.`);
-			console.log(`  Raw text: ${inspect(rawText)}`);
-			console.log(`   Ratings:`);
-			console.log(formatRatings(response.candidates![0].safetyRatings!));
-		} else {
-			console.log(`${cyan("[ANSWER]")}`);
-			console.log(`   Raw text: ${inspect(rawText)}`);
-			console.log(`  Sanitized: ${inspect(sanitized)}`);
+		console.log(`${cyan("[ANSWER]")}`);
+		console.log(`  Sanitized: ${inspect(sanitized)}`);
+		console.log(`   Raw text: ${inspect(rawText)}`);
+		console.log(`    Ratings:`);
+		console.log(formatRatings(response.candidates![0].safetyRatings!));
 
-			await reply(sanitized);
-		}
+		await reply(sanitized);
 	} catch (error) {
 		// TODO: handle errors better
 		if (!(error instanceof GoogleGenerativeAIError)) return;
