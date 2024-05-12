@@ -1,7 +1,6 @@
 import fs from "node:fs/promises";
 import process from "node:process";
 import util from "node:util";
-import { Cron } from "croner";
 import { cyan, gray, red, yellow } from "kleur/colors";
 import {
 	GoogleGenerativeAI,
