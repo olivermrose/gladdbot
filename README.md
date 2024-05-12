@@ -4,7 +4,16 @@ Curated Twitch chatbot for [Gladd](https://twitch.tv/gladd) using [Gemini](https
 
 ## Setup
 
-Node.js >=v20.6.0 is required to run this. Rename the `.env.example` file to `.env`. Next, you'll need 2-3 things:
+> [!NOTE]
+> Node.js >=v20.6.0 is required to run this.
+
+Install dependencies:
+
+```sh
+pnpm install
+```
+
+Rename the `.env.example` file to `.env`. Next, you'll need 2-3 things:
 
 1. A Google AI API Key
 2. A service Twitch account
@@ -16,8 +25,8 @@ Go to [aistudio.google.com](https://aistudio.google.com/app/apikey), click `Get 
 
 ### Twitch Account
 
-> [!WARNING]
-> I would recommended you use a separate Twitch account to run this; however, if you *do* want to user yours, then the steps are the same.
+> [!TIP]
+> I would recommended a separate Twitch account to run this; however, if you *do* want to use yours, then the steps are the same.
 
 1. Go to the [Twitch Developer Console](https://dev.twitch.tv/console)
    1. If you have an existing application:
