@@ -25,6 +25,7 @@ export function sanitize(text: string, options: { limit: number; emoteList: stri
 			.replace(/\\(.)/g, "$1")
 			// remove asterisks, html entities, and emojis
 			.replace(/\*+|&#\w+?;|\p{ExtPict}/gu, "")
+			.replace(/gfuel/gi, "ADVANCEDgg")
 			.replace(emoteRegex, "$1")
 			.trim()
 	);
