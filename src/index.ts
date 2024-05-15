@@ -1,7 +1,7 @@
 import fs from "node:fs/promises";
 import process from "node:process";
 import util from "node:util";
-import { cyan, gray, red, yellow } from "kleur/colors";
+import { blue, red, yellow } from "kleur/colors";
 import {
 	GoogleGenerativeAI,
 	GoogleGenerativeAIError,
@@ -24,13 +24,13 @@ const systemInstruction = rawInstructions
 	.replace("{{EMOTES}}", emoteList.join(", "));
 
 if (systemInstruction.length > 8192) {
-	throw new RangeError(
-		red(`System instruction length exceeds 8192 characters (${systemInstruction.length}).`),
+	console.warn(
+		`${yellow("[WARN]")} System instructions exceed 8192 characters (${systemInstruction.length}). This can potentially generate lower quality responses.`,
 	);
 }
 
 console.log(
-	`${gray("[SYSTEM]")} System instructions loaded (${yellow(systemInstruction.length)} characters)`,
+	`${blue("[INFO]")} System instructions loaded (${yellow(systemInstruction.length)} characters)`,
 );
 
 const ai = new GoogleGenerativeAI(process.env.GOOGLE_AI_KEY!);
@@ -74,23 +74,23 @@ const bot = new Bot({
 	],
 });
 
-bot.onConnect(() => console.log(`${gray("[SYSTEM]")} Connected to Twitch`));
+bot.onConnect(() => console.log(`${blue("[INFO]")} Connected to Twitch`));
 
 const inspect = (str: string) => util.inspect(str, { colors: true });
 
 async function exec(params: string[], { reply, userDisplayName: user }: BotCommandContext) {
-	const question = params.join(" ");
-	if (!question) return;
+	const prompt = params.join(" ");
+	if (!prompt) return;
 
-	console.log(`${cyan("[QUESTION]")} ${yellow(user)}: ${question}`);
+	console.log(`${blue("[INFO]")} Prompt - ${yellow(user)}: ${prompt}`);
 
 	try {
-		const { response } = await model.generateContent(`${user} asked ${question}`);
+		const { response } = await model.generateContent(`${user} prompted ${prompt}`);
 
 		const rawText = response.text();
 		const sanitized = sanitize(rawText, { limit: MAX_OUTPUT_LENGTH, emoteList });
 
-		console.log(`${cyan("[ANSWER]")}`);
+		console.log(`${blue("[INFO] Response")}`);
 		console.log(`  Sanitized: ${inspect(sanitized)}`);
 		console.log(`   Raw text: ${inspect(rawText)}`);
 		console.log(`    Ratings:`);

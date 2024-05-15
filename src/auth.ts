@@ -1,6 +1,6 @@
 import process from "node:process";
 import postgres from "postgres";
-import { gray, red } from "kleur/colors";
+import { blue, red } from "kleur/colors";
 import { RefreshingAuthProvider } from "@twurple/auth";
 
 export const sql = postgres(process.env.DATABASE_URL!);
@@ -35,9 +35,9 @@ auth.onRefresh(async (_, data) => {
 			);
 		`;
 
-		console.log(`${gray("[SYSTEM]")} Auth refreshed`);
+		console.log(`${blue("[INFO]")} Auth refreshed`);
 	} catch {
-		console.error(`${red("[SYSTEM]")} Error refreshing auth`);
+		console.error(`${red("[ERROR]")} Error refreshing auth`);
 	}
 });
 
