@@ -35,7 +35,7 @@ console.log(
 
 const ai = new GoogleGenerativeAI(process.env.GOOGLE_AI_KEY!);
 const model = ai.getGenerativeModel({
-	model: "gemini-1.5-pro-latest",
+	model: "gemini-1.5-flash-latest",
 	systemInstruction,
 	// These filter Gemini's response, not the user's messages
 	safetySettings: [
