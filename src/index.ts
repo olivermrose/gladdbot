@@ -15,7 +15,6 @@ import regularsList from "../data/regulars.json";
 import { auth } from "./auth";
 import { formatRatings, sanitize } from "./util";
 
-const MAX_OUTPUT_LENGTH = 400;
 const rawInstructions = await fs.readFile("./data/instructions.txt", "utf-8");
 
 const systemInstruction = rawInstructions
@@ -35,7 +34,7 @@ console.log(
 
 const ai = new GoogleGenerativeAI(process.env.GOOGLE_AI_KEY!);
 const model = ai.getGenerativeModel({
-	model: "gemini-1.5-pro-latest",
+	model: "gemini-1.5-flash-latest",
 	systemInstruction,
 	// These filter Gemini's response, not the user's messages
 	safetySettings: [
@@ -57,7 +56,14 @@ const model = ai.getGenerativeModel({
 		// }
 	],
 	generationConfig: {
-		maxOutputTokens: MAX_OUTPUT_LENGTH - 50,
+		/**
+		 * Tokens do not directly correspond to characters/words. I've found that
+		 * 90-100 tokens is around 500 characters; however, it fails to generate
+		 * anything if it's prompted with anything that would go over the limit
+		 * e.g. "tell me a bedtime story about dragons," so this option is
+		 * essentially useless for now.
+		 */
+		// maxOutputTokens: 100,
 	},
 });
 
@@ -76,7 +82,7 @@ const bot = new Bot({
 
 bot.onConnect(() => console.log(`${blue("[INFO]")} Connected to Twitch`));
 
-const inspect = (str: string) => util.inspect(str, { colors: true });
+const inspect = (value: string | number) => util.inspect(value, { colors: true });
 
 async function exec(params: string[], { reply, userDisplayName: user }: BotCommandContext) {
 	const prompt = params.join(" ");
@@ -88,11 +94,15 @@ async function exec(params: string[], { reply, userDisplayName: user }: BotComma
 		const { response } = await model.generateContent(`${user} prompted ${prompt}`);
 
 		const rawText = response.text();
-		const sanitized = sanitize(rawText, { limit: MAX_OUTPUT_LENGTH, emoteList });
+		const sanitized = sanitize(rawText, { limit: 400, emoteList });
+
+		const { totalTokens } = await model.countTokens(rawText);
 
 		console.log(`${blue("[INFO]")} Response`);
 		console.log(`  Sanitized: ${inspect(sanitized)}`);
 		console.log(`   Raw text: ${inspect(rawText)}`);
+		console.log(`Token count: ${inspect(totalTokens)}`);
+		console.log(`Char. count: ${inspect(rawText.length)}/${inspect(sanitized.length)}`);
 		console.log(`    Ratings:`);
 		console.log(formatRatings(response.candidates![0].safetyRatings!));
 
