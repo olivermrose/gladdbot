@@ -35,7 +35,7 @@ console.log(
 
 const ai = new GoogleGenerativeAI(process.env.GOOGLE_AI_KEY!);
 const model = ai.getGenerativeModel({
-	model: "gemini-1.5-flash-latest",
+	model: "gemini-1.5-pro-latest",
 	systemInstruction,
 	// These filter Gemini's response, not the user's messages
 	safetySettings: [
@@ -57,7 +57,7 @@ const model = ai.getGenerativeModel({
 		// }
 	],
 	generationConfig: {
-		maxOutputTokens: MAX_OUTPUT_LENGTH,
+		maxOutputTokens: MAX_OUTPUT_LENGTH - 50,
 	},
 });
 
@@ -90,7 +90,7 @@ async function exec(params: string[], { reply, userDisplayName: user }: BotComma
 		const rawText = response.text();
 		const sanitized = sanitize(rawText, { limit: MAX_OUTPUT_LENGTH, emoteList });
 
-		console.log(`${blue("[INFO] Response")}`);
+		console.log(`${blue("[INFO]")} Response`);
 		console.log(`  Sanitized: ${inspect(sanitized)}`);
 		console.log(`   Raw text: ${inspect(rawText)}`);
 		console.log(`    Ratings:`);
