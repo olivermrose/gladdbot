@@ -84,8 +84,9 @@ const bot = new Bot({
 
 bot.onConnect(() => console.log(`${blue("[INFO]")} Connected to Twitch`));
 
-Cron("*/30 * * * *", async () => {
+Cron("*/25 * * * *", async () => {
 	await bot.say("Gladd", havok[(Math.random() * havok.length) | 0]);
+	console.log(`${blue("[INFO]")} Cron job triggered`);
 });
 
 const inspect = (value: string | number) => util.inspect(value, { colors: true });
