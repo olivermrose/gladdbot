@@ -11,12 +11,12 @@ export function sanitize(text: string, options: { limit: number; emoteList: stri
 		truncate(text, options.limit, [...emotes, ".", "?", "!"])
 			// insert zws at the beginning of commands
 			.replace(/^([!/])/, "\u200B$1")
-			// newlines to spaces
 			.replace(/\n/g, " ")
 			// remove escapes
 			.replace(/\\(.)/g, "$1")
 			// remove asterisks, html entities, and emojis
 			.replace(/\*+|&#\w+?;|\p{ExtPict}/gu, "")
+			.replace(/Gladd([A-Z0-9]+)/g, "gladd$1")
 			.replace(/gfuel/gi, "ADVANCEDgg")
 			.replace(emoteRegex, "$1")
 			.trim()
