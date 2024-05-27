@@ -2,6 +2,7 @@ import fs from "node:fs/promises";
 import process from "node:process";
 import util from "node:util";
 import { blue, red, yellow } from "kleur/colors";
+import Cron from "croner";
 import {
 	GoogleGenerativeAI,
 	GoogleGenerativeAIError,
@@ -9,6 +10,7 @@ import {
 	HarmCategory,
 } from "@google/generative-ai";
 import { Bot, type BotCommandContext, createBotCommand } from "@twurple/easy-bot";
+import havok from "../data/havok.json";
 import emoteList from "../data/emotes.json";
 import moderatorList from "../data/moderators.json";
 import regularsList from "../data/regulars.json";
@@ -81,6 +83,10 @@ const bot = new Bot({
 });
 
 bot.onConnect(() => console.log(`${blue("[INFO]")} Connected to Twitch`));
+
+const job = Cron("* */30 * * * *", async () => {
+	await bot.say("Gladd", havok[(Math.random() * havok.length) | 0]);
+});
 
 const inspect = (value: string | number) => util.inspect(value, { colors: true });
 
