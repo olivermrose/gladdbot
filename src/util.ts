@@ -1,4 +1,5 @@
-import { cyan, gray, green, red, yellow } from "kleur/colors";
+import util from "node:util";
+import { blue, cyan, gray, green, red, yellow } from "kleur/colors";
 import { HarmProbability, type SafetyRating } from "@google/generative-ai";
 
 let emoteRegex: RegExp | undefined;
@@ -66,3 +67,17 @@ export function formatRatings(ratings: SafetyRating[]) {
 		`\t- Sexually explicit: ${getProbability("SEXUAL")}`,
 	].join("\n");
 }
+
+interface Logger {
+	(msg: string): void;
+	info: (msg: string) => void;
+	warn: (msg: string) => void;
+	error: (msg: string) => void;
+	inspect: (val: string | number) => string;
+}
+
+export const log: Logger = (msg) => console.log(msg);
+log.info = (msg) => console.info(`${blue("[INFO]")} ${msg}`);
+log.warn = (msg) => console.warn(`${yellow("[WARN]")} ${msg}`);
+log.error = (msg) => console.error(`${red("[ERROR]")} ${msg}`);
+log.inspect = (val) => util.inspect(val, { colors: true });

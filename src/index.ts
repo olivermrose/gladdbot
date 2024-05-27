@@ -1,7 +1,6 @@
 import fs from "node:fs/promises";
 import process from "node:process";
-import util from "node:util";
-import { blue, red, yellow } from "kleur/colors";
+import { yellow } from "kleur/colors";
 import Cron from "croner";
 import {
 	GoogleGenerativeAI,
@@ -15,7 +14,7 @@ import emoteList from "../data/emotes.json";
 import moderatorList from "../data/moderators.json";
 import regularsList from "../data/regulars.json";
 import { auth } from "./auth";
-import { formatRatings, sanitize } from "./util";
+import { formatRatings, log, sanitize } from "./util";
 
 const rawInstructions = await fs.readFile("./data/instructions.txt", "utf-8");
 
@@ -25,14 +24,12 @@ const systemInstruction = rawInstructions
 	.replace("{{EMOTES}}", emoteList.join(", "));
 
 if (systemInstruction.length > 8192) {
-	console.warn(
-		`${yellow("[WARN]")} System instructions exceed 8192 characters (${systemInstruction.length}). This can potentially generate lower quality responses.`,
+	log.warn(
+		`System instructions exceed 8192 characters (${log.inspect(systemInstruction.length)}). This can potentially generate lower quality responses.`,
 	);
 }
 
-console.log(
-	`${blue("[INFO]")} System instructions loaded (${yellow(systemInstruction.length)} characters)`,
-);
+log.info(`System instructions loaded (${log.inspect(systemInstruction.length)} characters)`);
 
 const ai = new GoogleGenerativeAI(process.env.GOOGLE_AI_KEY!);
 const model = ai.getGenerativeModel({
@@ -82,20 +79,18 @@ const bot = new Bot({
 	],
 });
 
-bot.onConnect(() => console.log(`${blue("[INFO]")} Connected to Twitch`));
+bot.onConnect(() => log.info(`Connected to Twitch`));
 
 Cron("*/25 * * * *", async () => {
 	await bot.say("Gladd", havok[(Math.random() * havok.length) | 0]);
-	console.log(`${blue("[INFO]")} Cron job triggered`);
+	log.info("Cron job triggered");
 });
-
-const inspect = (value: string | number) => util.inspect(value, { colors: true });
 
 async function exec(params: string[], { reply, userDisplayName: user }: BotCommandContext) {
 	const prompt = params.join(" ");
 	if (!prompt) return;
 
-	console.log(`${blue("[INFO]")} Prompt - ${yellow(user)}: ${prompt}`);
+	log.info(`Prompt - ${yellow(user)}: ${prompt}`);
 
 	try {
 		const { response } = await model.generateContent(`${user} prompted ${prompt}`);
@@ -105,13 +100,13 @@ async function exec(params: string[], { reply, userDisplayName: user }: BotComma
 
 		const { totalTokens } = await model.countTokens(rawText);
 
-		console.log(`${blue("[INFO]")} Response`);
-		console.log(`  Sanitized: ${inspect(sanitized)}`);
-		console.log(`   Raw text: ${inspect(rawText)}`);
-		console.log(`Token count: ${inspect(totalTokens)}`);
-		console.log(`Char. count: ${inspect(rawText.length)}/${inspect(sanitized.length)}`);
-		console.log(`    Ratings:`);
-		console.log(formatRatings(response.candidates![0].safetyRatings!));
+		log.info(`Response`);
+		log(`  Sanitized: ${log.inspect(sanitized)}`);
+		log(`   Raw text: ${log.inspect(rawText)}`);
+		log(`Token count: ${log.inspect(totalTokens)}`);
+		log(`Char. count: ${log.inspect(rawText.length)}/${log.inspect(sanitized.length)}`);
+		log(`    Ratings:`);
+		log(formatRatings(response.candidates![0].safetyRatings!));
 
 		await reply(sanitized);
 	} catch (error) {
@@ -119,9 +114,9 @@ async function exec(params: string[], { reply, userDisplayName: user }: BotComma
 		if (!(error instanceof GoogleGenerativeAIError)) return;
 
 		if (error.message.includes("429")) {
-			console.error(red(error.message.slice(error.message.indexOf("429") - 1)));
+			log.error(error.message.slice(error.message.indexOf("429") - 1));
 		} else {
-			console.error(red(error.message));
+			log.error(error.message);
 		}
 	}
 }
