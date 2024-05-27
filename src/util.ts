@@ -4,19 +4,11 @@ import { HarmProbability, type SafetyRating } from "@google/generative-ai";
 let emoteRegex: RegExp | undefined;
 
 export function sanitize(text: string, options: { limit: number; emoteList: string[] }) {
-	emoteRegex ??= new RegExp(
-		`(${options.emoteList.map((line) => line.split(" ")[0]).join("|")})[.,!?]`,
-		"g",
-	);
+	const emotes = options.emoteList.map((line) => line.split(" ")[0]);
+	emoteRegex ??= new RegExp(`(${emotes.join("|")})[.,!?]`, "g");
 
 	return (
-		text
-			/**
-			 * Yes, naively slicing will possibly cut off text mid-sentence; however,
-			 * there's no good method to detect the end of a sentence when using 7TV
-			 * emotes.
-			 */
-			.slice(0, options.limit)
+		truncate(text, options.limit, [...emotes, ".", "?", "!"])
 			// insert zws at the beginning of commands
 			.replace(/^([!/])/, "\u200B$1")
 			// newlines to spaces
@@ -29,6 +21,28 @@ export function sanitize(text: string, options: { limit: number; emoteList: stri
 			.replace(emoteRegex, "$1")
 			.trim()
 	);
+}
+
+function truncate(text: string, length: number, terminators: string[]) {
+	let truncated = text.slice(0, length);
+
+	let lastTermIndex = -1;
+	let lastTermLength = 0;
+
+	for (const term of terminators) {
+		const index = truncated.lastIndexOf(term);
+
+		if (index > lastTermIndex) {
+			lastTermIndex = index;
+			lastTermLength = term.length;
+		}
+	}
+
+	if (lastTermIndex !== -1) {
+		truncated = truncated.slice(0, lastTermIndex + lastTermLength);
+	}
+
+	return truncated;
 }
 
 const probabilityColors = {
