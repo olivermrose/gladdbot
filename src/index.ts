@@ -4,6 +4,7 @@ import { Bot } from "@twurple/easy-bot";
 import { EventSubWsListener } from "@twurple/eventsub-ws";
 import havok from "../data/havok.json";
 import ai from "./ai";
+import aistats from "./aistats";
 import { auth } from "./auth";
 import { redis } from "./redis";
 import { log } from "./util";
@@ -11,12 +12,12 @@ import { log } from "./util";
 const bot = new Bot({
 	authProvider: auth,
 	channels: ["Gladd", "xiBread_"],
-	commands: [ai],
+	commands: [ai, aistats],
 });
 
-const ws = new EventSubWsListener({ apiClient: bot.api });
-
 bot.onConnect(() => log.info(`Connected to Twitch`));
+
+const ws = new EventSubWsListener({ apiClient: bot.api });
 
 const job = new Cron(
 	"*/30 * * * *",

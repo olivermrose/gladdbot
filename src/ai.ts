@@ -11,6 +11,7 @@ import { createBotCommand } from "@twurple/easy-bot";
 import emoteList from "../data/emotes.json";
 import moderatorList from "../data/moderators.json";
 import regularsList from "../data/regulars.json";
+import { redis } from "./redis";
 import { formatRatings, log, sanitize } from "./util";
 
 const rawInstructions = await fs.readFile("./data/instructions.txt", "utf-8");
@@ -88,6 +89,10 @@ export default createBotCommand(
 			log(formatRatings(response.candidates![0].safetyRatings!));
 
 			await reply(sanitized);
+
+			if ((await redis.get("online")) === "1") {
+				await redis.incr("responses");
+			}
 		} catch (error) {
 			// TODO: handle errors better
 			if (!(error instanceof GoogleGenerativeAIError)) return;
