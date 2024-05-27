@@ -100,7 +100,7 @@ async function exec(params: string[], { reply, userDisplayName: user }: BotComma
 		const { response } = await model.generateContent(`${user} prompted ${prompt}`);
 
 		const rawText = response.text();
-		const sanitized = sanitize(rawText, { limit: 400, emoteList });
+		const sanitized = sanitize(rawText, { limit: 350, emoteList });
 
 		const { totalTokens } = await model.countTokens(rawText);
 
