@@ -1,18 +1,10 @@
 import process from "node:process";
 import fs from "node:fs/promises";
-import { yellow } from "kleur/colors";
-import {
-	GoogleGenerativeAI,
-	GoogleGenerativeAIError,
-	HarmBlockThreshold,
-	HarmCategory,
-} from "@google/generative-ai";
-import { createBotCommand } from "@twurple/easy-bot";
+import { GoogleGenerativeAI, HarmBlockThreshold, HarmCategory } from "@google/generative-ai";
 import emoteList from "../data/emotes.json";
 import moderatorList from "../data/moderators.json";
 import regularsList from "../data/regulars.json";
-import { redis } from "./redis";
-import { formatRatings, log, sanitize } from "./util";
+import { log } from "./util";
 
 const rawInstructions = await fs.readFile("./data/instructions.txt", "utf-8");
 
@@ -24,7 +16,8 @@ const systemInstruction = rawInstructions
 log.info(`System instructions loaded (${log.inspect(systemInstruction.length)} characters)`);
 
 const ai = new GoogleGenerativeAI(process.env.GOOGLE_AI_KEY!);
-const model = ai.getGenerativeModel({
+
+export const model = ai.getGenerativeModel({
 	model: "gemini-1.5-pro-latest",
 	systemInstruction,
 	// These filter Gemini's response, not the user's messages
@@ -58,46 +51,3 @@ const model = ai.getGenerativeModel({
 		temperature: 1.5,
 	},
 });
-
-export default createBotCommand(
-	"ai",
-	async (params, { reply, userDisplayName: user }) => {
-		const prompt = params.join(" ");
-		if (!prompt) return;
-
-		log.info(`Prompt - ${yellow(user)}: ${prompt}`);
-
-		try {
-			const { response } = await model.generateContent(`${user} prompted ${prompt}`);
-
-			const rawText = response.text();
-			const sanitized = sanitize(rawText, { limit: 350, emoteList });
-
-			const { totalTokens } = await model.countTokens(rawText);
-
-			log.info(`Response`);
-			log(`  Sanitized: ${log.inspect(sanitized)}`);
-			log(`   Raw text: ${log.inspect(rawText)}`);
-			log(`Token count: ${log.inspect(totalTokens)}`);
-			log(`Char. count: ${log.inspect(rawText.length)}/${log.inspect(sanitized.length)}`);
-			log(`    Ratings:`);
-			log(formatRatings(response.candidates![0].safetyRatings!));
-
-			await reply(sanitized);
-			await redis.incr("responses");
-		} catch (error) {
-			// TODO: handle errors better
-			if (!(error instanceof GoogleGenerativeAIError)) return;
-
-			if (error.message.includes("429")) {
-				log.error(error.message.slice(error.message.indexOf("429") - 1));
-			} else {
-				log.error(error.message);
-			}
-		}
-	},
-	{
-		globalCooldown: 15,
-		userCooldown: 20,
-	},
-);

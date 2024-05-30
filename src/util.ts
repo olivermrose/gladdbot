@@ -1,11 +1,29 @@
 import util from "node:util";
 import { blue, cyan, gray, green, red, yellow } from "kleur/colors";
 import { HarmProbability, type SafetyRating } from "@google/generative-ai";
+import { createBotCommand, type BotCommandContext } from "@twurple/easy-bot";
+import emoteList from "../data/emotes.json";
+
+interface Command {
+	name: string;
+	aliases?: string[];
+	globalCooldown?: number;
+	userCooldown?: number;
+	exec(content: string, ctx: BotCommandContext): void;
+}
+
+export function defineCommand(command: Command) {
+	return createBotCommand(command.name, (args, ctx) => command.exec(args.join(" "), ctx), {
+		aliases: command.aliases,
+		globalCooldown: command.globalCooldown ?? 5,
+		userCooldown: command.userCooldown,
+	});
+}
 
 let emoteRegex: RegExp | undefined;
 
-export function sanitize(text: string, options: { limit: number; emoteList: string[] }) {
-	const emotes = options.emoteList.map((line) => line.split(" ")[0]);
+export function sanitize(text: string, options: { limit: number }) {
+	const emotes = emoteList.map((line) => line.split(" ")[0]);
 	emoteRegex ??= new RegExp(`(${emotes.join("|")})[.,!?]`, "g");
 
 	return (

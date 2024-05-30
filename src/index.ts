@@ -1,15 +1,14 @@
 import Cron from "croner";
 import { Bot } from "@twurple/easy-bot";
 import havok from "../data/havok.json";
-import ai from "./ai";
-import aistats from "./aistats";
+import commands from "./commands";
 import { auth } from "./auth";
 import { log } from "./util";
 
 const bot = new Bot({
 	authProvider: auth,
 	channels: ["Gladd", "xiBread_"],
-	commands: [ai, aistats],
+	commands,
 });
 
 bot.onConnect(() => log.info(`Connected to Twitch`));
