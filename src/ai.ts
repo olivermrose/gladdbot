@@ -90,10 +90,7 @@ export default createBotCommand(
 			log(formatRatings(response.candidates![0].safetyRatings!));
 
 			await reply(sanitized);
-
-			if ((await redis.get("online")) === "1") {
-				await redis.incr("responses");
-			}
+			await redis.incr("responses");
 		} catch (error) {
 			// TODO: handle errors better
 			if (!(error instanceof GoogleGenerativeAIError)) return;
