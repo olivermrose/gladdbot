@@ -21,12 +21,6 @@ const systemInstruction = rawInstructions
 	.replace("{{REGULARS}}", regularsList.join(", "))
 	.replace("{{EMOTES}}", emoteList.join(", "));
 
-if (systemInstruction.length > 8192) {
-	log.warn(
-		`System instructions exceed 8192 characters (${log.inspect(systemInstruction.length)}). This can potentially generate lower quality responses.`,
-	);
-}
-
 log.info(`System instructions loaded (${log.inspect(systemInstruction.length)} characters)`);
 
 const ai = new GoogleGenerativeAI(process.env.GOOGLE_AI_KEY!);
