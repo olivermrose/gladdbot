@@ -61,6 +61,7 @@ const model = ai.getGenerativeModel({
 		 * essentially useless for now.
 		 */
 		// maxOutputTokens: 100,
+		temperature: 1.5,
 	},
 });
 
