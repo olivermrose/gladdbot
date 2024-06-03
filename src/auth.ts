@@ -12,7 +12,10 @@ interface TokenData {
 	obtainment_timestamp: number;
 }
 
-const [data] = await sql<[TokenData]>`SELECT * FROM tokens`;
+const [data] = await sql<[TokenData]>`
+	SELECT * FROM tokens
+	ORDER BY id DESC LIMIT 1
+`;
 
 export const auth = new RefreshingAuthProvider({
 	clientId: process.env.TWITCH_CLIENT_ID!,
