@@ -7,7 +7,7 @@ import { redis } from "../redis";
 export default defineCommand({
 	name: "ai",
 	globalCooldown: 15,
-	userCooldown: 25,
+	userCooldown: 20,
 	async exec(content, ctx) {
 		if (!content) return;
 
