@@ -18,13 +18,19 @@ for (let i = phrases.length - 1; i > 0; i--) {
 	[phrases[i], phrases[j]] = [phrases[j], phrases[i]];
 }
 
+let counter = 0;
+
 Cron(
-	"*/30 * * * *",
+	"*/15 * * * *",
 	async () => {
+		counter++;
+		if (counter !== 3) return;
+
 		const stream = await bot.api.streams.getStreamByUserName("Gladd");
 		if (!stream) return;
 
 		await bot.say("Gladd", phrases[(Math.random() * phrases.length) | 0]);
+		counter = 0;
 	},
 	{ timezone: "America/New_York" },
 );
