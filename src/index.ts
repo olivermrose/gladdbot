@@ -22,12 +22,11 @@ for (let i = phrases.length - 1; i > 0; i--) {
 Cron(
 	"*/15 * * * *",
 	async () => {
-		const intervals = await redis.incr("intervals");
-		console.log(intervals);
-		if (intervals !== 3) return;
-
 		const stream = await bot.api.streams.getStreamByUserName("Gladd");
 		if (!stream) return;
+
+		const intervals = await redis.incr("intervals");
+		if (intervals !== 3) return;
 
 		await bot.say("Gladd", phrases[(Math.random() * phrases.length) | 0]);
 		await redis.set("intervals", 0);
