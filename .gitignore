@@ -1,6 +1,5 @@
 node_modules
 
-build/Release
 dist
 out
 
@@ -13,9 +12,6 @@ lerna-debug.log*
 
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 
-coverage
-*.lcov
-
 *.tsbuildinfo
 *.tgz
 .DS_Store
@@ -26,5 +22,4 @@ coverage
 
 .env
 .env.test
-
 temp.txt
