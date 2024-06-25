@@ -14,9 +14,7 @@ export default defineCommand({
 		log.info(`Prompt - ${yellow(ctx.userDisplayName)}: ${content}`);
 
 		try {
-			const { response } = await model.generateContent(
-				`${ctx.userDisplayName} prompted ${content}`,
-			);
+			const { response } = await model.generateContent(`${ctx.userDisplayName}: ${content}`);
 
 			const rawText = response.text();
 			const sanitized = sanitize(rawText, { limit: 350 });
