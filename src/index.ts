@@ -1,6 +1,6 @@
 import Cron from "croner";
 import { Bot } from "@twurple/easy-bot";
-import phrases from "../data/havok.json";
+import phrases from "../data/phrases.json";
 import commands from "./commands";
 import { auth } from "./auth";
 import { redis } from "./redis";
