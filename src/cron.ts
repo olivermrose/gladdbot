@@ -25,6 +25,7 @@ export async function job(bot: Bot) {
 		);
 
 		await bot.say("Gladd", sanitize(response.text(), { limit: 350 }));
+		return;
 	}
 
 	await bot.say("Gladd", phrases[(Math.random() * phrases.length) | 0]);
