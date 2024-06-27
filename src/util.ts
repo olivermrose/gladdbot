@@ -50,7 +50,7 @@ export function sanitize(text: string, options: { limit: number }) {
 			// remove asterisks and html entities
 			.replace(/\*+|&#\w+;/g, "")
 			// replace emojis
-			.replace(/\p{ExtPict}/gu, ".")
+			.replace(/\p{ExtPict}/gu, "")
 			.replace(/gladd([A-Z0-9]+)/gi, "gladd$1")
 			.replace(/g-?fuel/gi, "ADVANCEDgg")
 			.replace(emoteRegex, "$1")
