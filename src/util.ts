@@ -1,8 +1,22 @@
 import util from "node:util";
 import { blue, cyan, gray, green, red, yellow } from "kleur/colors";
-import { HarmProbability, type SafetyRating } from "@google/generative-ai";
+import { GoogleGenerativeAIError, HarmProbability, type SafetyRating } from "@google/generative-ai";
 import { createBotCommand, type BotCommandContext } from "@twurple/easy-bot";
 import emoteList from "../data/emotes.json";
+
+interface Logger {
+	(msg: string): void;
+	info: (msg: string) => void;
+	warn: (msg: string) => void;
+	error: (msg: string) => void;
+	inspect: (val: string | number) => string;
+}
+
+export const log: Logger = (msg) => console.log(msg);
+log.info = (msg) => console.info(`${blue("[INFO]")} ${msg}`);
+log.warn = (msg) => console.warn(`${yellow("[WARN]")} ${msg}`);
+log.error = (msg) => console.error(`${red("[ERROR]")} ${msg}`);
+log.inspect = (val) => util.inspect(val, { colors: true });
 
 interface Command {
 	name: string;
@@ -51,7 +65,10 @@ function truncate(text: string, length: number, terminators: string[]) {
 	let lastTermLength = 0;
 
 	for (const term of terminators) {
-		const index = truncated.lastIndexOf(term);
+		const index =
+			term.length === 1
+				? truncated.lastIndexOf(term)
+				: new RegExp(`\\b${term}\\b`).exec(truncated)?.index ?? -1;
 
 		if (index > lastTermIndex) {
 			lastTermIndex = index;
@@ -88,16 +105,12 @@ export function formatRatings(ratings: SafetyRating[]) {
 	].join("\n");
 }
 
-interface Logger {
-	(msg: string): void;
-	info: (msg: string) => void;
-	warn: (msg: string) => void;
-	error: (msg: string) => void;
-	inspect: (val: string | number) => string;
-}
+export function handleError(error: unknown) {
+	if (!(error instanceof GoogleGenerativeAIError)) return;
 
-export const log: Logger = (msg) => console.log(msg);
-log.info = (msg) => console.info(`${blue("[INFO]")} ${msg}`);
-log.warn = (msg) => console.warn(`${yellow("[WARN]")} ${msg}`);
-log.error = (msg) => console.error(`${red("[ERROR]")} ${msg}`);
-log.inspect = (val) => util.inspect(val, { colors: true });
+	if (error.message.includes("429")) {
+		log.error(error.message.slice(error.message.indexOf("429") - 1));
+	} else {
+		log.error(error.message);
+	}
+}

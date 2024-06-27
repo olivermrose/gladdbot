@@ -1,6 +1,5 @@
 import { yellow } from "kleur/colors";
-import { GoogleGenerativeAIError } from "@google/generative-ai";
-import { defineCommand, formatRatings, log, sanitize } from "../util";
+import { defineCommand, formatRatings, handleError, log, sanitize } from "../util";
 import { model } from "../model";
 import { redis } from "../redis";
 
@@ -32,14 +31,7 @@ export default defineCommand({
 			await ctx.reply(sanitized);
 			await redis.incr("responses");
 		} catch (error) {
-			// TODO: handle errors better
-			if (!(error instanceof GoogleGenerativeAIError)) return;
-
-			if (error.message.includes("429")) {
-				log.error(error.message.slice(error.message.indexOf("429") - 1));
-			} else {
-				log.error(error.message);
-			}
+			handleError(error);
 		}
 	},
 });
