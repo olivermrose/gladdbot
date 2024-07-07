@@ -19,9 +19,14 @@ export async function job(bot: Bot) {
 	const intervals = await redis.incr("intervals");
 	if (intervals < interval / 5) return;
 
-	if (Math.random() > 0.5) {
+	if (Math.random() > 0.6) {
 		const { response } = await model.generateContent(
-			"Give a hot take/unpopular opinion, insult a random mod/user, or say something random that would trigger people.",
+			[
+				"Do only one of the following:",
+				"- Give a controversial opinion",
+				"- Take a dig at a random mod or user",
+				"- Insult Gladd",
+			].join("\n"),
 		);
 
 		await bot.say("Gladd", sanitize(response.text(), { limit: 350 }));
