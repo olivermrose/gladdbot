@@ -24,8 +24,9 @@ export async function job(bot: Bot) {
 			[
 				"Do only one of the following:",
 				"- Give a controversial opinion",
-				"- Take a dig at a random mod or user",
 				"- Insult Gladd",
+				"- Say something random",
+				// "- Take a dig at a random mod or user",
 			].join("\n"),
 		);
 
