@@ -23,7 +23,7 @@ export async function job(bot: Bot) {
 		const { response } = await model.generateContent(
 			[
 				"Do only one of the following:",
-				"- Give a controversial opinion",
+				// "- Give a controversial opinion",
 				"- Insult Gladd",
 				"- Say something random",
 				// "- Take a dig at a random mod or user",
