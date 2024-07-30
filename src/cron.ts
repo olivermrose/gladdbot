@@ -31,9 +31,9 @@ export async function job(bot: Bot) {
 		);
 
 		await bot.say("Gladd", sanitize(response.text(), { limit: 350 }));
-		return;
+	} else {
+		await bot.say("Gladd", phrases[(Math.random() * phrases.length) | 0]);
 	}
 
-	await bot.say("Gladd", phrases[(Math.random() * phrases.length) | 0]);
 	await redis.set("intervals", 0);
 }
