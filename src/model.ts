@@ -18,7 +18,7 @@ log.info(`System instructions loaded (${log.inspect(systemInstruction.length)} c
 const ai = new GoogleGenerativeAI(process.env.GOOGLE_AI_KEY!);
 
 export const model = ai.getGenerativeModel({
-	model: "gemini-1.5-pro-latest",
+	model: "gemini-1.5-pro-exp-0801",
 	systemInstruction,
 	// These filter Gemini's response, not the user's messages
 	safetySettings: [
