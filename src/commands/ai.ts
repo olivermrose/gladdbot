@@ -12,8 +12,10 @@ export default defineCommand({
 
 		log.info(`Prompt - ${yellow(ctx.userDisplayName)}: ${content}`);
 
+		const user = `${ctx.userDisplayName} (${ctx.msg.userInfo.isSubscriber ? "not" : ""} subbed)`;
+
 		try {
-			const { response } = await model.generateContent(`${ctx.userDisplayName}: ${content}`);
+			const { response } = await model.generateContent(`${user}: ${content}`);
 
 			const rawText = response.text();
 			const sanitized = sanitize(rawText, { limit: 350 });
