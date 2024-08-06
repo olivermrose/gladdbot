@@ -20,15 +20,7 @@ export async function job(bot: Bot) {
 	if (intervals < interval / 5) return;
 
 	if (Math.random() > 0.6) {
-		const { response } = await model.generateContent(
-			[
-				"Do only one of the following:",
-				// "- Give a controversial opinion",
-				"- Insult Gladd",
-				"- Say something random",
-				// "- Take a dig at a random mod or user",
-			].join("\n"),
-		);
+		const { response } = await model.generateContent("say anything");
 
 		await bot.say("Gladd", sanitize(response.text(), { limit: 350 }));
 	} else {
