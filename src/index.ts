@@ -13,4 +13,4 @@ const bot = new Bot({
 
 bot.onConnect(() => log.info(`Connected to Twitch`));
 
-Cron(`*/5 * * * *`, async () => await job(bot), { timezone: "America/New_York" });
+// Cron(`*/5 * * * *`, async () => await job(bot), { timezone: "America/New_York" });
