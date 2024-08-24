@@ -13,4 +13,23 @@ const bot = new Bot({
 
 bot.onConnect(() => log.info(`Connected to Twitch`));
 
-// Cron(`*/5 * * * *`, async () => await job(bot), { timezone: "America/New_York" });
+let messages: string[] = [];
+
+bot.onMessage((msg) => {
+	if (msg.userDisplayName === "GladdBotAI") return;
+
+	messages.push(`${msg.userDisplayName}: ${msg.text}`);
+
+	if (messages.length > 25) {
+		messages = messages.slice(0, 25);
+	}
+});
+
+Cron(
+	`*/5 * * * *`,
+	async () => {
+		await job(bot, messages);
+		messages = [];
+	},
+	{ timezone: "America/New_York" },
+);
