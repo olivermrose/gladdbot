@@ -14,7 +14,7 @@ export async function job(bot: Bot, messages: string[]) {
 	if (intervals < interval / 5) return;
 
 	const { response } = await model.generateContent(`
-		Respond to one of these topics. DO NOT promote sponsors.
+		Respond to ONLY ONE of these messages. DO NOT promote sponsors.
 		===================
 		${messages.join("\n")}
 	`);
