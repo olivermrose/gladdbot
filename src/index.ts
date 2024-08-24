@@ -5,6 +5,8 @@ import { auth } from "./auth";
 import { job } from "./cron";
 import { log } from "./util";
 
+const BOT_USERNAMES = ["gladdbotai", "nightbot", "fossabot"];
+
 const bot = new Bot({
 	authProvider: auth,
 	channels: ["Gladd", "xiBread_"],
@@ -15,8 +17,8 @@ bot.onConnect(() => log.info(`Connected to Twitch`));
 
 let messages: string[] = [];
 
-bot.onMessage((msg) => {
-	if (msg.userDisplayName === "GladdBotAI") return;
+bot.onMessage(async (msg) => {
+	if (BOT_USERNAMES.includes(msg.userName) || msg.text.startsWith("!")) return;
 
 	messages.push(`${msg.userDisplayName}: ${msg.text}`);
 
