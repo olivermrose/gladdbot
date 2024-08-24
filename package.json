@@ -22,22 +22,20 @@
 		"build": "tsup"
 	},
 	"dependencies": {
-		"@google/generative-ai": "^0.11.5",
+		"@google/generative-ai": "^0.17.1",
 		"@twurple/auth": "^7.1.0",
 		"@twurple/easy-bot": "^7.1.0",
-		"croner": "^8.0.2",
+		"croner": "^8.1.1",
 		"kleur": "^4.1.5",
 		"postgres": "^3.4.4",
-		"redis": "^4.6.14"
+		"redis": "^4.7.0"
 	},
 	"devDependencies": {
-		"@antfu/eslint-config": "^2.19.1",
-		"@types/node": "^20.12.13",
-		"@typescript-eslint/eslint-plugin": "^7.11.0",
-		"@typescript-eslint/parser": "^7.11.0",
+		"@antfu/eslint-config": "^2.27.1",
+		"@types/node": "^22.5.0",
 		"eslint-config-prettier": "^9.1.0",
-		"prettier": "^3.2.5",
-		"tsup": "^8.0.2",
-		"typescript": "^5.4.5"
+		"prettier": "^3.3.3",
+		"tsup": "^8.2.4",
+		"typescript": "^5.5.4"
 	}
 }
