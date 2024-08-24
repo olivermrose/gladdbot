@@ -22,7 +22,7 @@ bot.onMessage(async (msg) => {
 
 	messages.push(`${msg.userDisplayName}: ${msg.text}`);
 
-	if (messages.length > 25) {
+	if (messages.length > 15) {
 		messages = messages.slice(0, 25);
 	}
 });
