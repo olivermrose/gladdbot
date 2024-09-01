@@ -15,7 +15,7 @@ export async function job(bot: Bot, messages: string[]) {
 
 	try {
 		const { response } = await model.generateContent(`
-			Respond to ONLY ONE of these messages. DO NOT promote sponsors.
+			Respond to ONLY ONE of these messages. DO NOT promote sponsors. DO NOT repeat the message.
 			===================
 			${messages.join("\n")}
 		`);
