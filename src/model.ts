@@ -1,14 +1,12 @@
 import process from "node:process";
-import fs from "node:fs/promises";
 import { GoogleGenerativeAI, HarmBlockThreshold, HarmCategory } from "@google/generative-ai";
 import emoteList from "../data/emotes.json";
 import moderatorList from "../data/moderators.json";
 import regularsList from "../data/regulars.json";
+import instructions from "../data/instructions.txt"
 import { log } from "./util";
 
-const rawInstructions = await fs.readFile("./data/instructions.txt", "utf-8");
-
-const systemInstruction = rawInstructions
+const systemInstruction = instructions
 	.replace("{{MODERATORS}}", moderatorList.join(", "))
 	.replace("{{REGULARS}}", regularsList.join(", "))
 	.replace("{{EMOTES}}", emoteList.join(", "));
