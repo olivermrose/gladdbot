@@ -3,6 +3,7 @@ import { Bot } from "@twurple/easy-bot";
 import commands from "./commands";
 import { auth } from "./auth";
 import { job } from "./cron";
+import { MessageQueue } from "./queue";
 import { log } from "./util";
 
 const BOT_USERNAMES = ["gladdbotai", "nightbot", "fossabot"];
@@ -15,23 +16,19 @@ const bot = new Bot({
 
 bot.onConnect(() => log.info(`Connected to Twitch`));
 
-let messages: string[] = [];
+const mq = new MessageQueue();
 
 bot.onMessage(async (msg) => {
 	if (BOT_USERNAMES.includes(msg.userName) || msg.text.startsWith("!")) return;
 
-	messages.push(`${msg.userDisplayName}: ${msg.text}`);
-
-	if (messages.length > 15) {
-		messages = messages.slice(0, 25);
-	}
+	mq.add(`${msg.userDisplayName}: ${msg.text}`);
 });
 
 Cron(
 	`*/5 * * * *`,
 	async () => {
-		await job(bot, messages);
-		messages = [];
+		await job(bot, mq.messages);
+		mq.clear()
 	},
 	{ timezone: "America/New_York" },
 );
