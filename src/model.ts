@@ -1,15 +1,13 @@
 import process from "node:process";
 import { GoogleGenerativeAI, HarmBlockThreshold, HarmCategory } from "@google/generative-ai";
-import emoteList from "../data/emotes.json";
-import moderatorList from "../data/moderators.json";
-import regularsList from "../data/regulars.json";
-import instructions from "../data/instructions.txt"
+import emotes from "../data/emotes.json";
+import users from "../data/users.json";
+import instructions from "../data/instructions.txt";
 import { log } from "./util";
 
 const systemInstruction = instructions
-	.replace("{{MODERATORS}}", moderatorList.join(", "))
-	.replace("{{REGULARS}}", regularsList.join(", "))
-	.replace("{{EMOTES}}", emoteList.join(", "));
+	.replace("{{USERS}}", users.join(", "))
+	.replace("{{EMOTES}}", emotes.join(", "));
 
 log.info(`System instructions loaded (${log.inspect(systemInstruction.length)} characters)`);
 
