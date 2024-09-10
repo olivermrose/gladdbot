@@ -1,3 +1,4 @@
+import process from "node:process";
 import Cron from "croner";
 import { Bot } from "@twurple/easy-bot";
 import commands from "./commands";
@@ -24,11 +25,13 @@ bot.onMessage(async (msg) => {
 	mq.add(`${msg.userDisplayName}: ${msg.text}`);
 });
 
-Cron(
-	`*/5 * * * *`,
-	async () => {
-		// await job(bot, mq.messages);
-		mq.clear();
-	},
-	{ timezone: "America/New_York" },
-);
+if (process.env.CRON_JOB_ENABLED) {
+	Cron(
+		`*/5 * * * *`,
+		async () => {
+			await job(bot, mq.messages);
+			mq.clear();
+		},
+		{ timezone: "America/New_York" },
+	);
+}
