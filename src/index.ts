@@ -27,8 +27,8 @@ bot.onMessage(async (msg) => {
 Cron(
 	`*/5 * * * *`,
 	async () => {
-		await job(bot, mq.messages);
-		mq.clear()
+		// await job(bot, mq.messages);
+		mq.clear();
 	},
 	{ timezone: "America/New_York" },
 );
