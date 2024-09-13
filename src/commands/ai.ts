@@ -25,8 +25,7 @@ export default defineCommand({
 			log(`   Raw text: ${log.inspect(rawText)}`);
 			log(`Token count: ${log.inspect(totalTokens)}`);
 			log(`Char. count: ${log.inspect(rawText.length)}/${log.inspect(sanitized.length)}`);
-			log(`    Ratings:`);
-			log(formatRatings(response.candidates![0].safetyRatings!));
+			log(`    Ratings: ${formatRatings(response.candidates![0].safetyRatings!)}`);
 
 			await ctx.reply(sanitized);
 			await redis.incr("responses");

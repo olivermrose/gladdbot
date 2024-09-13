@@ -69,7 +69,7 @@ function truncate(text: string, length: number, terminators: string[]) {
 		const index =
 			term.length === 1
 				? truncated.lastIndexOf(term)
-				: new RegExp(`\\b${term}\\b`).exec(truncated)?.index ?? -1;
+				: (new RegExp(`\\b${term}\\b`).exec(truncated)?.index ?? -1);
 
 		if (index > lastTermIndex) {
 			lastTermIndex = index;
@@ -93,17 +93,17 @@ const probabilityColors = {
 };
 
 export function formatRatings(ratings: SafetyRating[]) {
-	function getProbability(keyword: string) {
+	function getProbability(keyword: string, tag: string) {
 		const { probability: p } = ratings.find((r) => r.category.includes(keyword))!;
-		return probabilityColors[p](p);
+		return probabilityColors[p](tag);
 	}
 
 	return [
-		`\t- Dangerous content: ${getProbability("DANGER")}`,
-		`\t- Harassment: ${getProbability("HARASS")}`,
-		`\t- Hate speech: ${getProbability("HATE")}`,
-		`\t- Sexually explicit: ${getProbability("SEXUAL")}`,
-	].join("\n");
+		getProbability("DANGER", "DC"),
+		getProbability("HARASS", "HM"),
+		getProbability("HATE", "HS"),
+		getProbability("SEXUAL", "SE"),
+	].join(" ");
 }
 
 export function handleError(error: unknown) {
