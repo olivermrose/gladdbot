@@ -9,6 +9,9 @@ import { log } from "./util";
 
 const BOT_USERNAMES = ["gladdbotai", "nightbot", "fossabot"];
 
+const cronEnabled = Number(process.env.CRON_JOB_ENABLED);
+const mq = new MessageQueue();
+
 const bot = new Bot({
 	authProvider: auth,
 	channels: ["Gladd", "xiBread_"],
@@ -17,15 +20,17 @@ const bot = new Bot({
 
 bot.onConnect(() => log.info(`Connected to Twitch`));
 
-const mq = new MessageQueue();
+bot.chat.onMessage(async (_channel, user, text, msg) => {
+	if (BOT_USERNAMES.includes(user) || text.startsWith("!")) return;
 
-bot.onMessage(async (msg) => {
-	if (BOT_USERNAMES.includes(msg.userName) || msg.text.startsWith("!")) return;
+	const subBadge = Number(msg.userInfo.badges.get("subscriber")) > 3;
 
-	mq.add(`${msg.userDisplayName}: ${msg.text}`);
+	if (cronEnabled && subBadge) {
+		mq.add(`${msg.userInfo.displayName}: ${text}`);
+	}
 });
 
-if (Number(process.env.CRON_JOB_ENABLED)) {
+if (cronEnabled) {
 	Cron(
 		`*/5 * * * *`,
 		async () => {
