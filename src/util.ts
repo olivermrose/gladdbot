@@ -60,6 +60,7 @@ export function sanitize(text: string, options: { limit: number }) {
 }
 
 function truncate(text: string, length: number, terminators: string[]) {
+	if (text.length <= length) return text;
 	let truncated = text.slice(0, length);
 
 	let lastTermIndex = -1;
