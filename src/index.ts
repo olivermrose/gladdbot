@@ -25,7 +25,7 @@ bot.onMessage(async (msg) => {
 	mq.add(`${msg.userDisplayName}: ${msg.text}`);
 });
 
-if (process.env.CRON_JOB_ENABLED) {
+if (Number(process.env.CRON_JOB_ENABLED)) {
 	Cron(
 		`*/5 * * * *`,
 		async () => {
