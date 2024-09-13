@@ -18,13 +18,15 @@ export default defineCommand({
 			const rawText = response.text();
 			const sanitized = sanitize(rawText, { limit: 350 });
 
-			const { totalTokens } = await model.countTokens(rawText);
+			const { promptTokenCount, candidatesTokenCount } = response.usageMetadata!;
+
+			const charCounts = `${log.inspect(sanitized.length)}/${log.inspect(rawText.length)}`;
+			const tokenCounts = `${log.inspect(promptTokenCount)}/${log.inspect(candidatesTokenCount)}`;
 
 			log.info(`Response`);
 			log(`  Sanitized: ${log.inspect(sanitized)}`);
 			log(`   Raw text: ${log.inspect(rawText)}`);
-			log(`Token count: ${log.inspect(totalTokens)}`);
-			log(`Char. count: ${log.inspect(rawText.length)}/${log.inspect(sanitized.length)}`);
+			log(`     Counts: ${charCounts} | ${tokenCounts}`);
 			log(`    Ratings: ${formatRatings(response.candidates![0].safetyRatings!)}`);
 
 			await ctx.reply(sanitized);
