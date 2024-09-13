@@ -28,8 +28,8 @@ export default defineCommand({
 			const sanitized = sanitize(rawText, { limit: 350 });
 
 			log.info(`Response (Nerd)`);
-			log(`  Sanitized: ${log.inspect(sanitized)}`);
-			log(`   Raw text: ${log.inspect(rawText)}`);
+			log(`Sanitized: ${log.inspect(sanitized)}`);
+			log(` Raw text: ${log.inspect(rawText)}`);
 
 			await ctx.reply(sanitized);
 			await redis.incr("responses");
