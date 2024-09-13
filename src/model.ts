@@ -36,14 +36,7 @@ export const model = ai.getGenerativeModel({
 		},
 	],
 	generationConfig: {
-		/**
-		 * Tokens do not directly correspond to characters/words. I've found that
-		 * 90-100 tokens is around 500 characters; however, it fails to generate
-		 * anything if it's prompted with anything that would go over the limit
-		 * e.g. "tell me a bedtime story about dragons," so this option is
-		 * essentially useless for now.
-		 */
-		// maxOutputTokens: 100,
+		maxOutputTokens: 100,
 		temperature: 1.5,
 	},
 });
