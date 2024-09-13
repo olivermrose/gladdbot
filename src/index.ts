@@ -34,6 +34,8 @@ if (cronEnabled) {
 	Cron(
 		`*/5 * * * *`,
 		async () => {
+			if (!mq.messages.length) return;
+
 			await job(bot, mq.messages);
 			mq.clear();
 		},
