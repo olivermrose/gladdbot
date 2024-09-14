@@ -3,7 +3,7 @@ import postgres from "postgres";
 import { RefreshingAuthProvider } from "@twurple/auth";
 import { log } from "./util";
 
-export const sql = postgres(process.env.DATABASE_URL!);
+export const sql = postgres(process.env.POSTGRES_URL!);
 
 interface TokenData {
 	access_token: string;
