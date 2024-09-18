@@ -26,10 +26,10 @@ export default defineCommand({
 			const tokenCounts = `${log.inspect(promptTokenCount)}/${log.inspect(candidatesTokenCount)}`;
 
 			log.info(`Response`);
-			log(`  Sanitized: ${log.inspect(sanitized)}`);
-			log(`   Raw text: ${log.inspect(rawText)}`);
-			log(`     Counts: ${charCounts} | ${tokenCounts}`);
-			log(`    Ratings: ${formatRatings(response.candidates![0].safetyRatings!)}`);
+			log(`Sanitized: ${log.inspect(sanitized)}`);
+			log(` Raw text: ${log.inspect(rawText)}`);
+			log(`   Counts: ${charCounts} | ${tokenCounts}`);
+			log(`  Ratings: ${formatRatings(response.candidates![0].safetyRatings!)}`);
 
 			await ctx.reply(sanitized);
 			await redis.incr("responses");
