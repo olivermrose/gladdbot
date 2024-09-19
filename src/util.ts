@@ -96,7 +96,7 @@ const probabilityColors = {
 export function formatRatings(ratings: SafetyRating[]) {
 	function getProbability(keyword: string, tag: string) {
 		const { probability: p } = ratings.find((r) => r.category.includes(keyword))!;
-		return probabilityColors[p](tag);
+		return `${tag}:${probabilityColors[p](p[0])}`;
 	}
 
 	return [
