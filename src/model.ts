@@ -14,7 +14,7 @@ log.info(`System instructions loaded (${log.inspect(systemInstruction.length)} c
 const ai = new GoogleGenerativeAI(process.env.GOOGLE_AI_KEY!);
 
 export const model = ai.getGenerativeModel({
-	model: process.env.GOOGLE_AI_MODEL ?? "gemini-1.5-pro-001",
+	model: process.env.GOOGLE_AI_MODEL ?? "gemini-1.5-pro-002",
 	systemInstruction,
 	// These filter both generated content and prompts
 	safetySettings: [
