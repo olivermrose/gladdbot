@@ -1,5 +1,5 @@
 import process from "node:process";
-import Cron from "croner";
+import { Cron } from "croner";
 import { Bot } from "@twurple/easy-bot";
 import commands from "./commands";
 import { auth } from "./auth";
@@ -31,7 +31,7 @@ bot.chat.onMessage(async (_channel, user, text, msg) => {
 });
 
 if (cronEnabled) {
-	Cron(
+	new Cron(
 		`*/5 * * * *`,
 		async () => {
 			if (!mq.messages.length) return;
