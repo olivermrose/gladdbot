@@ -1,8 +1,8 @@
 import process from "node:process";
-import { Cron } from "croner";
 import { Bot } from "@twurple/easy-bot";
-import commands from "./commands";
+import { Cron } from "croner";
 import { auth } from "./auth";
+import commands from "./commands";
 import { job } from "./cron";
 import { MessageQueue } from "./queue";
 import { log } from "./util";
@@ -31,6 +31,7 @@ bot.chat.onMessage(async (_channel, user, text, msg) => {
 });
 
 if (cronEnabled) {
+	// eslint-disable-next-line no-new
 	new Cron(
 		`*/5 * * * *`,
 		async () => {
