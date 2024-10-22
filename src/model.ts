@@ -1,8 +1,8 @@
 import process from "node:process";
 import { GoogleGenerativeAI, HarmBlockThreshold, HarmCategory } from "@google/generative-ai";
 import emotes from "../data/emotes.json";
-import users from "../data/users.json";
 import instructions from "../data/instructions.txt";
+import users from "../data/users.json";
 import { log } from "./util";
 
 const systemInstruction = instructions

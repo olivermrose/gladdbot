@@ -1,6 +1,6 @@
 import process from "node:process";
-import postgres from "postgres";
 import { RefreshingAuthProvider } from "@twurple/auth";
+import postgres from "postgres";
 import { log } from "./util";
 
 export const sql = postgres(process.env.POSTGRES_URL!);

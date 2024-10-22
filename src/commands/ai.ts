@@ -1,7 +1,7 @@
 import { yellow } from "kleur/colors";
-import { defineCommand, formatRatings, handleError, log, sanitize } from "../util";
 import { model } from "../model";
 import { redis } from "../redis";
+import { defineCommand, formatRatings, handleError, log, sanitize } from "../util";
 
 export default defineCommand({
 	name: "ai",

@@ -4,6 +4,7 @@ import prettier from "eslint-config-prettier";
 export default config({
 	rules: {
 		curly: "off",
+		"antfu/no-top-level-await": "off",
 		"no-console": "off",
 		"import/order": "off",
 		"jsonc/sort-keys": "off",
