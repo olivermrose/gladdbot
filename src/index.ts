@@ -7,7 +7,7 @@ import { job } from "./cron";
 import { MessageQueue } from "./queue";
 import { log } from "./util";
 
-const BOT_USERNAMES = ["gladdbotai", "nightbot", "fossabot"];
+const BOT_USERNAMES = ["blerp", "fossabot", "gladdbotai", "nightbot"];
 
 const cronEnabled = Number(process.env.CRON_JOB_ENABLED);
 const mq = new MessageQueue();
