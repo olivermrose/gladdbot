@@ -6,6 +6,6 @@ export default defineCommand({
 	async exec(_, ctx) {
 		const responseCount = await redis.get("responses");
 
-		await ctx.reply(`${responseCount ?? 0} questions have been answered WICKED`);
+		await ctx.reply(`I've responded to ${responseCount ?? 0} prompts Chatting`);
 	},
 });
