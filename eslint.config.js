@@ -6,6 +6,7 @@ export default config({
 		curly: "off",
 		"antfu/no-top-level-await": "off",
 		"no-console": "off",
+		"no-new": "off",
 		"import/order": "off",
 		"jsonc/sort-keys": "off",
 		"ts/ban-ts-comment": "off",

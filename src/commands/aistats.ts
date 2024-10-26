@@ -1,4 +1,4 @@
-import { redis } from "../redis";
+import { redis } from "../db";
 import { defineCommand } from "../util";
 
 export default defineCommand({

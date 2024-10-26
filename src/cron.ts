@@ -1,7 +1,7 @@
 import process from "node:process";
 import type { Bot } from "@twurple/easy-bot";
+import { redis } from "./db";
 import { model } from "./model";
-import { redis } from "./redis";
 import { handleError, sanitize } from "./util";
 
 const interval = Number(process.env.CRON_JOB_INTERVAL);
