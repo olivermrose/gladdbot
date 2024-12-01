@@ -27,15 +27,15 @@
 		"@twurple/easy-bot": "^7.2.0",
 		"croner": "^9.0.0",
 		"kleur": "^4.1.5",
-		"postgres": "^3.4.4",
+		"postgres": "^3.4.5",
 		"redis": "^4.7.0"
 	},
 	"devDependencies": {
-		"@antfu/eslint-config": "^3.8.0",
-		"@types/node": "^22.7.6",
+		"@antfu/eslint-config": "^3.11.2",
+		"@types/node": "^22.10.1",
 		"eslint-config-prettier": "^9.1.0",
-		"prettier": "^3.3.3",
-		"tsup": "^8.3.0",
-		"typescript": "^5.6.3"
+		"prettier": "^3.4.1",
+		"tsup": "^8.3.5",
+		"typescript": "^5.7.2"
 	}
 }
