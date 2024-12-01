@@ -16,6 +16,7 @@ const mq = new MessageQueue();
 interface Message {
 	username: string;
 	content: string;
+	sentAt: Date;
 }
 
 let buffer: Message[] = [];
@@ -40,6 +41,7 @@ bot.chat.onMessage(async (_channel, user, text, msg) => {
 	buffer.push({
 		username: msg.userInfo.displayName,
 		content: text,
+		sentAt: new Date(),
 	});
 
 	if (buffer.length >= 100) {
@@ -57,8 +59,9 @@ async function flush() {
 		await sql`
 			INSERT INTO messages (
 				username,
-				content
-			) VALUES ${sql(toInsert.map((m) => [m.username, m.content]))}
+				content,
+				sent_at
+			) VALUES ${sql(toInsert.map((m) => [m.username, m.content, m.sentAt.toISOString()]))}
 		`;
 	} catch (error) {
 		console.error("Error inserting messages");
