@@ -1,3 +1,4 @@
+import { DynamicRetrievalMode } from "@google/generative-ai";
 import { yellow } from "kleur/colors";
 import { redis } from "../db";
 import { model } from "../model";
@@ -22,12 +23,24 @@ export default defineCommand({
 				],
 				systemInstruction:
 					"You are a Twitch chat bot designed to answer questions. Make sure to answer correctly, but add some vulgarity/profanity.",
+				tools: [
+					{
+						googleSearchRetrieval: {
+							dynamicRetrievalConfig: {
+								mode: DynamicRetrievalMode.MODE_DYNAMIC,
+								dynamicThreshold: 0.5,
+							},
+						},
+					},
+				],
 			});
 
 			const rawText = response.text();
 			const sanitized = sanitize(rawText, { limit: 350 });
 
-			log.info(`Response (Nerd)`);
+			const grounded = !!response.candidates?.[0].groundingMetadata;
+
+			log.info(`Response (Nerd${grounded ? ", Grounded" : ""})`);
 			log(`Sanitized: ${log.inspect(sanitized)}`);
 			log(` Raw text: ${log.inspect(rawText)}`);
 
