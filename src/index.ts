@@ -5,7 +5,7 @@ import { yellow } from "kleur/colors";
 import { auth } from "./auth";
 import commands from "./commands";
 import { job } from "./cron";
-import { sql } from "./db";
+import { sql, redis } from "./db";
 import { generate } from "./model";
 import { MessageQueue } from "./queue";
 import { formatPrompt, log } from "./util";
@@ -41,6 +41,7 @@ bot.chat.onMessage(async (channel, user, text, msg) => {
 
 		if (response) {
 			await bot.reply(channel, response, msg);
+			await redis.incr("responses_tag");
 		}
 	}
 
