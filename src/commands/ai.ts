@@ -1,7 +1,7 @@
 import { yellow } from "kleur/colors";
 import { redis } from "../db";
-import { model } from "../model";
-import { defineCommand, formatRatings, handleError, log, sanitize } from "../util";
+import { generate } from "../model";
+import { defineCommand, log } from "../util";
 
 export default defineCommand({
 	name: "ai",
@@ -12,29 +12,10 @@ export default defineCommand({
 
 		log.info(`Prompt - ${yellow(ctx.userDisplayName)}: ${content}`);
 
-		try {
-			const { response } = await model.generateContent(
-				`User: ${ctx.userDisplayName}\nPrompt: ${content}`,
-			);
+		const response = await generate(`User: ${ctx.userDisplayName}\nPrompt: ${content}`);
+		if (!response) return;
 
-			const rawText = response.text();
-			const sanitized = sanitize(rawText, { limit: 350 });
-
-			const { promptTokenCount, candidatesTokenCount } = response.usageMetadata!;
-
-			const charCounts = `${log.inspect(sanitized.length)}/${log.inspect(rawText.length)}`;
-			const tokenCounts = `${log.inspect(promptTokenCount)}/${log.inspect(candidatesTokenCount)}`;
-
-			log.info(`Response`);
-			log(`Sanitized: ${log.inspect(sanitized)}`);
-			log(` Raw text: ${log.inspect(rawText)}`);
-			log(`   Counts: ${charCounts} | ${tokenCounts}`);
-			log(`  Ratings: ${formatRatings(response.candidates![0].safetyRatings!)}`);
-
-			await ctx.reply(sanitized);
-			await redis.incr("responses");
-		} catch (error) {
-			handleError(error);
-		}
+		await ctx.reply(response);
+		await redis.incr("responses");
 	},
 });

@@ -1,10 +1,12 @@
 import process from "node:process";
 import { Bot } from "@twurple/easy-bot";
 import { Cron } from "croner";
+import { yellow } from "kleur/colors";
 import { auth } from "./auth";
 import commands from "./commands";
 import { job } from "./cron";
 import { sql } from "./db";
+import { generate } from "./model";
 import { MessageQueue } from "./queue";
 import { log } from "./util";
 
@@ -29,8 +31,18 @@ const bot = new Bot({
 
 bot.onConnect(() => log.info(`Connected to Twitch`));
 
-bot.chat.onMessage(async (_channel, user, text, msg) => {
+bot.chat.onMessage(async (channel, user, text, msg) => {
 	if (BOT_USERNAMES.includes(user) || text.startsWith("!")) return;
+
+	if (/@?gladd ?bot(?:ai)?/i.test(text)) {
+		log.info(`Prompt (Tag) - ${yellow(user)}: ${text}`);
+
+		const response = await generate(`User: ${user}\nPrompt: ${text}`);
+
+		if (response) {
+			await bot.reply(channel, response, msg);
+		}
+	}
 
 	const subBadge = Number(msg.userInfo.badges.get("subscriber")) > 3;
 
@@ -71,7 +83,7 @@ async function flush() {
 	}
 }
 
-new Cron("*/20 * * * *", async () => await flush(), { timezone: "America/New_York" });
+new Cron("*/20 * * * *", flush, { timezone: "America/New_York" });
 
 if (cronEnabled) {
 	new Cron(

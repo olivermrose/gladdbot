@@ -3,7 +3,7 @@ import { GoogleGenerativeAI, HarmBlockThreshold, HarmCategory } from "@google/ge
 import emotes from "../data/emotes.json";
 import instructions from "../data/instructions.txt";
 import users from "../data/users.json";
-import { log } from "./util";
+import { formatRatings, handleError, log, sanitize } from "./util";
 
 const systemInstruction = instructions
 	.replace("{{USERS}}", users.join(", "))
@@ -40,3 +40,27 @@ export const model = ai.getGenerativeModel({
 		temperature: 1.5,
 	},
 });
+
+export async function generate(prompt: string) {
+	try {
+		const { response } = await model.generateContent(prompt);
+
+		const rawText = response.text();
+		const sanitized = sanitize(rawText, { limit: 350 });
+
+		const { promptTokenCount, candidatesTokenCount } = response.usageMetadata!;
+
+		const charCounts = `${log.inspect(sanitized.length)}/${log.inspect(rawText.length)}`;
+		const tokenCounts = `${log.inspect(promptTokenCount)}/${log.inspect(candidatesTokenCount)}`;
+
+		log.info("Response");
+		log(`Sanitized: ${log.inspect(sanitized)}`);
+		log(` Raw text: ${log.inspect(rawText)}`);
+		log(`   Counts: C:${charCounts} | T:${tokenCounts}`);
+		log(`  Ratings: ${formatRatings(response.candidates![0].safetyRatings!)}`);
+
+		return sanitized;
+	} catch (error) {
+		handleError(error);
+	}
+}
