@@ -8,7 +8,7 @@ import { job } from "./cron";
 import { sql } from "./db";
 import { generate } from "./model";
 import { MessageQueue } from "./queue";
-import { log } from "./util";
+import { formatPrompt, log } from "./util";
 
 const BOT_USERNAMES = ["blerp", "fossabot", "gladdbotai", "nightbot"];
 
@@ -37,7 +37,7 @@ bot.chat.onMessage(async (channel, user, text, msg) => {
 	if (/@?gladd ?bot(?:ai)?/i.test(text)) {
 		log.info(`Prompt (Tag) - ${yellow(user)}: ${text}`);
 
-		const response = await generate(`User: ${user}\nPrompt: ${text}`);
+		const response = await generate(formatPrompt(msg));
 
 		if (response) {
 			await bot.reply(channel, response, msg);

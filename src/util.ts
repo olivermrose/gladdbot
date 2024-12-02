@@ -1,8 +1,11 @@
 import util from "node:util";
 import { blue, cyan, gray, green, red, yellow } from "kleur/colors";
 import { GoogleGenerativeAIError, HarmProbability, type SafetyRating } from "@google/generative-ai";
-import { createBotCommand, type BotCommandContext } from "@twurple/easy-bot";
+import { createBotCommand, type Bot, type BotCommandContext } from "@twurple/easy-bot";
 import emoteList from "../data/emotes.json";
+
+// Type aren't re-exported for some reason...
+type ChatMessage = Parameters<Parameters<Bot["chat"]["onMessage"]>[0]>[3];
 
 interface Logger {
 	(msg: string): void;
@@ -32,6 +35,25 @@ export function defineCommand(command: Command) {
 		globalCooldown: command.globalCooldown ?? 5,
 		userCooldown: command.userCooldown,
 	});
+}
+
+export function formatPrompt(message: ChatMessage) {
+	let user = message.userInfo.displayName;
+	const badges: string[] = [];
+
+	if (message.userInfo.isMod) badges.push("Mod");
+	if (message.userInfo.isVip) badges.push("VIP");
+
+	if (message.userInfo.badges.has("subscriber")) {
+		const months = Number(message.userInfo.badges.get("subscriber"));
+		badges.push(`Subbed for ${months} months`);
+	}
+
+	if (badges.length) {
+		user += ` (${badges.join(", ")})`;
+	}
+
+	return `${user} sent the following prompt\n<PROMPT>${message.text}</PROMPT>`;
 }
 
 let emoteRegex: RegExp | undefined;

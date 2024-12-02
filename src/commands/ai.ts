@@ -1,7 +1,7 @@
 import { yellow } from "kleur/colors";
 import { redis } from "../db";
 import { generate } from "../model";
-import { defineCommand, log } from "../util";
+import { defineCommand, formatPrompt, log } from "../util";
 
 export default defineCommand({
 	name: "ai",
@@ -12,7 +12,7 @@ export default defineCommand({
 
 		log.info(`Prompt - ${yellow(ctx.userDisplayName)}: ${content}`);
 
-		const response = await generate(`User: ${ctx.userDisplayName}\nPrompt: ${content}`);
+		const response = await generate(formatPrompt(ctx.msg));
 		if (!response) return;
 
 		await ctx.reply(response);
