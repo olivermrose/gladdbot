@@ -44,11 +44,6 @@ export function formatPrompt(message: ChatMessage) {
 	if (message.userInfo.isMod) badges.push("Mod");
 	if (message.userInfo.isVip) badges.push("VIP");
 
-	if (message.userInfo.badges.has("subscriber")) {
-		const months = Number(message.userInfo.badges.get("subscriber"));
-		badges.push(`Subbed for ${months} months`);
-	}
-
 	if (badges.length) {
 		user += ` (${badges.join(", ")})`;
 	}
