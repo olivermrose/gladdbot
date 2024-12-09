@@ -1,3 +1,4 @@
+import process from "node:process";
 import { DynamicRetrievalMode } from "@google/generative-ai";
 import { yellow } from "kleur/colors";
 import { redis } from "../db";
@@ -11,6 +12,8 @@ export default defineCommand({
 	async exec(content, ctx) {
 		if (!content) return;
 
+		const hasGrounding = process.env.GOOGLE_AI_MODEL === "gemini-1.5-pro";
+
 		log.info(`Prompt (Nerd) - ${yellow(ctx.userDisplayName)}: ${content}`);
 
 		try {
@@ -23,16 +26,18 @@ export default defineCommand({
 				],
 				systemInstruction:
 					"You are a Twitch chat bot designed to answer questions. Make sure to answer correctly, but add some vulgarity/profanity.",
-				tools: [
-					{
-						googleSearchRetrieval: {
-							dynamicRetrievalConfig: {
-								mode: DynamicRetrievalMode.MODE_DYNAMIC,
-								dynamicThreshold: 0.5,
+				tools: hasGrounding
+					? [
+							{
+								googleSearchRetrieval: {
+									dynamicRetrievalConfig: {
+										mode: DynamicRetrievalMode.MODE_DYNAMIC,
+										dynamicThreshold: 0.5,
+									},
+								},
 							},
-						},
-					},
-				],
+						]
+					: undefined,
 			});
 
 			const rawText = response.text();
