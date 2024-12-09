@@ -1,12 +1,13 @@
 import process from "node:process";
+import type { ChatSession } from "@google/generative-ai";
 import { Bot } from "@twurple/easy-bot";
 import { Cron } from "croner";
 import { yellow } from "kleur/colors";
 import { auth } from "./auth";
 import commands from "./commands";
 import { job } from "./cron";
-import { sql, redis } from "./db";
-import { generate } from "./model";
+import { redis, sql } from "./db";
+import { generate, model } from "./model";
 import { MessageQueue } from "./queue";
 import { formatPrompt, log } from "./util";
 
@@ -22,6 +23,7 @@ interface Message {
 }
 
 let buffer: Message[] = [];
+const chats = new Map<string, ChatSession>();
 
 const bot = new Bot({
 	authProvider: auth,
@@ -35,13 +37,33 @@ bot.chat.onMessage(async (channel, user, text, msg) => {
 	if (BOT_USERNAMES.includes(user) || text.startsWith("!")) return;
 
 	if (/@?gladd ?bot(?:ai)?/i.test(text)) {
-		log.info(`Prompt (Tag) - ${yellow(user)}: ${text}`);
+		if (msg.isReply) {
+			let chat: ChatSession;
 
-		const response = await generate(formatPrompt(msg));
+			if (chats.has(msg.parentMessageId!)) {
+				chat = chats.get(msg.parentMessageId!)!;
+			} else {
+				chat = model.startChat({
+					history: [
+						{ role: "user", parts: [{ text: "" }] },
+						{ role: "model", parts: [{ text: msg.parentMessageText! }] },
+					],
+				});
 
-		if (response) {
-			await bot.reply(channel, response, msg);
-			await redis.incr("responses_tag");
+				chats.set(msg.parentMessageId!, chat);
+			}
+
+			const { response } = await chat.sendMessage(formatPrompt(msg));
+			await bot.reply(channel, response.text(), msg);
+		} else {
+			log.info(`Prompt (Tag) - ${yellow(user)}: ${text}`);
+
+			const response = await generate(formatPrompt(msg));
+
+			if (response) {
+				await bot.reply(channel, response, msg);
+				await redis.incr("responses_tag");
+			}
 		}
 	}
 
@@ -63,6 +85,7 @@ bot.chat.onMessage(async (channel, user, text, msg) => {
 });
 
 async function flush() {
+	chats.clear();
 	if (!buffer.length) return;
 
 	const toInsert = buffer;
