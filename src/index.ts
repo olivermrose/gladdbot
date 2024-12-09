@@ -56,6 +56,8 @@ bot.chat.onMessage(async (channel, user, text, msg) => {
 			const { response } = await chat.sendMessage(formatPrompt(msg));
 			await bot.reply(channel, response.text(), msg);
 		} else {
+			if (!text.startsWith("@") && Math.random() > 0.35) return;
+
 			log.info(`Prompt (Tag) - ${yellow(user)}: ${text}`);
 
 			const response = await generate(formatPrompt(msg));
