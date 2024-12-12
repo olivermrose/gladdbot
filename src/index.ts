@@ -45,7 +45,7 @@ bot.chat.onMessage(async (channel, user, text, msg) => {
 			} else {
 				chat = model.startChat({
 					history: [
-						{ role: "user", parts: [{ text: "" }] },
+						{ role: "user", parts: [{ text: "." }] },
 						{ role: "model", parts: [{ text: msg.parentMessageText! }] },
 					],
 				});
