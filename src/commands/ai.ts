@@ -1,4 +1,3 @@
-import { yellow } from "kleur/colors";
 import { redis } from "../db";
 import { generate } from "../model";
 import { defineCommand, formatPrompt, log } from "../util";
@@ -10,7 +9,11 @@ export default defineCommand({
 	async exec(content, ctx) {
 		if (!content) return;
 
-		log.info(`Prompt - ${yellow(ctx.userDisplayName)}: ${content}`);
+		log.info({
+			type: "command",
+			user: ctx.userDisplayName,
+			prompt: content,
+		});
 
 		const response = await generate(formatPrompt(ctx.msg));
 		if (!response) return;

@@ -9,7 +9,7 @@ const systemInstruction = instructions
 	.replace("{{USERS}}", users.join(", "))
 	.replace("{{EMOTES}}", emotes.join(", "));
 
-log.info(`System instructions loaded (${log.inspect(systemInstruction.length)} characters)`);
+log.info(`System instructions loaded (${systemInstruction.length} characters)`);
 
 const ai = new GoogleGenerativeAI(process.env.GOOGLE_AI_KEY!);
 
@@ -50,14 +50,17 @@ export async function generate(prompt: string) {
 
 		const { promptTokenCount, candidatesTokenCount } = response.usageMetadata!;
 
-		const charCounts = `${log.inspect(sanitized.length)}/${log.inspect(rawText.length)}`;
-		const tokenCounts = `${log.inspect(promptTokenCount)}/${log.inspect(candidatesTokenCount)}`;
-
-		log.info("Response");
-		log(`Sanitized: ${log.inspect(sanitized)}`);
-		log(` Raw text: ${log.inspect(rawText)}`);
-		log(`   Counts: C:${charCounts} | T:${tokenCounts}`);
-		log(`  Ratings: ${formatRatings(response.candidates![0].safetyRatings!)}`);
+		log.info({
+			response: {
+				raw: rawText,
+				sanitized,
+			},
+			counts: {
+				characters: [sanitized.length, rawText.length],
+				tokens: [promptTokenCount, candidatesTokenCount],
+			},
+			ratings: formatRatings(response.candidates?.[0].safetyRatings ?? []),
+		});
 
 		return sanitized;
 	} catch (error) {

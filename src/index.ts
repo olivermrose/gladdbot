@@ -2,7 +2,6 @@ import process from "node:process";
 import type { ChatSession } from "@google/generative-ai";
 import { Bot } from "@twurple/easy-bot";
 import { Cron } from "croner";
-import { yellow } from "kleur/colors";
 import { auth } from "./auth";
 import commands from "./commands";
 import { job } from "./cron";
@@ -58,7 +57,11 @@ bot.chat.onMessage(async (channel, user, text, msg) => {
 		} else {
 			if (!text.startsWith("@") && Math.random() > 0.35) return;
 
-			log.info(`Prompt (Tag) - ${yellow(user)}: ${text}`);
+			log.info({
+				type: "tag",
+				user,
+				prompt: text,
+			});
 
 			const response = await generate(formatPrompt(msg));
 

@@ -1,6 +1,5 @@
 import process from "node:process";
 import { DynamicRetrievalMode } from "@google/generative-ai";
-import { yellow } from "kleur/colors";
 import { redis } from "../db";
 import { model } from "../model";
 import { defineCommand, handleError, log, sanitize } from "../util";
@@ -14,7 +13,11 @@ export default defineCommand({
 
 		const hasGrounding = process.env.GOOGLE_AI_MODEL === "gemini-1.5-pro";
 
-		log.info(`Prompt (Nerd) - ${yellow(ctx.userDisplayName)}: ${content}`);
+		log.info({
+			type: "command",
+			user: ctx.userDisplayName,
+			prompt: content,
+		});
 
 		try {
 			const { response } = await model.generateContent({
@@ -45,9 +48,13 @@ export default defineCommand({
 
 			const grounded = !!response.candidates?.[0].groundingMetadata;
 
-			log.info(`Response (Nerd${grounded ? ", Grounded" : ""})`);
-			log(`Sanitized: ${log.inspect(sanitized)}`);
-			log(` Raw text: ${log.inspect(rawText)}`);
+			log.info({
+				response: {
+					raw: rawText,
+					sanitized,
+				},
+				grounded,
+			});
 
 			await ctx.reply(sanitized);
 			await redis.incr("responses");

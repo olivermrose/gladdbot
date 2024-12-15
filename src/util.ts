@@ -1,5 +1,4 @@
-import util from "node:util";
-import { blue, cyan, gray, green, red, yellow } from "kleur/colors";
+import pino from "pino";
 import { GoogleGenerativeAIError, HarmProbability, type SafetyRating } from "@google/generative-ai";
 import { createBotCommand, type Bot, type BotCommandContext } from "@twurple/easy-bot";
 import emoteList from "../data/emotes.json";
@@ -7,19 +6,7 @@ import emoteList from "../data/emotes.json";
 // Type aren't re-exported for some reason...
 type ChatMessage = Parameters<Parameters<Bot["chat"]["onMessage"]>[0]>[3];
 
-interface Logger {
-	(msg: string): void;
-	info: (msg: string) => void;
-	warn: (msg: string) => void;
-	error: (msg: string) => void;
-	inspect: (val: string | number) => string;
-}
-
-export const log: Logger = (msg) => console.log(msg);
-log.info = (msg) => console.info(`${blue("[INFO]")} ${msg}`);
-log.warn = (msg) => console.warn(`${yellow("[WARN]")} ${msg}`);
-log.error = (msg) => console.error(`${red("[ERROR]")} ${msg}`);
-log.inspect = (val) => util.inspect(val, { colors: true });
+export const log = pino({ base: null });
 
 interface Command {
 	name: string;
@@ -102,26 +89,11 @@ function truncate(text: string, length: number, terminators: string[]) {
 	return truncated;
 }
 
-const probabilityColors = {
-	[HarmProbability.HARM_PROBABILITY_UNSPECIFIED]: gray,
-	[HarmProbability.NEGLIGIBLE]: cyan,
-	[HarmProbability.LOW]: green,
-	[HarmProbability.MEDIUM]: yellow,
-	[HarmProbability.HIGH]: red,
-};
-
 export function formatRatings(ratings: SafetyRating[]) {
-	function getProbability(keyword: string, tag: string) {
-		const { probability: p } = ratings.find((r) => r.category.includes(keyword))!;
-		return `${tag}:${probabilityColors[p](p[0])}`;
-	}
-
-	return [
-		getProbability("DANGER", "DC"),
-		getProbability("HARASS", "HM"),
-		getProbability("HATE", "HS"),
-		getProbability("SEXUAL", "SE"),
-	].join(" ");
+	return ratings.reduce<Record<string, string>>(
+		(acc, rating) => ({ ...acc, [rating.category]: rating.probability }),
+		{},
+	);
 }
 
 export function handleError(error: unknown) {
