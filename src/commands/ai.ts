@@ -16,7 +16,7 @@ export default defineCommand({
 			prompt: content,
 		});
 
-		const chat = new Chat(model, { user: content });
+		const chat = new Chat({ user: content });
 		const response = await chat.send(ctx.msg);
 
 		if (response) {
