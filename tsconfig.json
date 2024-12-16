@@ -9,9 +9,9 @@
 		"moduleDetection": "force",
 		"esModuleInterop": true,
 		"verbatimModuleSyntax": true,
-		"resolveJsonModule": true
+		"resolveJsonModule": true,
 	},
 	"include": [
-		"**/*.ts"
+		"**/*.ts",
 	]
 }

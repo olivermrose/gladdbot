@@ -1,10 +1,8 @@
 import pino from "pino";
-import { GoogleGenerativeAIError, HarmProbability, type SafetyRating } from "@google/generative-ai";
-import { createBotCommand, type Bot, type BotCommandContext } from "@twurple/easy-bot";
+import { GoogleGenerativeAIError, type SafetyRating } from "@google/generative-ai";
+import { createBotCommand, type BotCommandContext } from "@twurple/easy-bot";
 import emoteList from "../data/emotes.json";
-
-// Type aren't re-exported for some reason...
-type ChatMessage = Parameters<Parameters<Bot["chat"]["onMessage"]>[0]>[3];
+import type { ChatMessage } from "./twitch";
 
 export const log = pino({ base: null });
 
@@ -55,7 +53,6 @@ export function sanitize(text: string, options: { limit: number }) {
 			.replace(/\*+|&#\w+;/g, "")
 			// replace emojis
 			.replace(/\p{ExtPict}/gu, "")
-			.replace(/gladd([A-Z0-9]+)/gi, "gladd$1")
 			// this was causing false positives
 			// .replace(/g[ -]?fuel/gi, "ADVANCEDgg")
 			.replace(emoteRegex, "$1")

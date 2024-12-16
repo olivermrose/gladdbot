@@ -1,6 +1,7 @@
-import { redis } from "../db";
-import { generate } from "../model";
-import { defineCommand, formatPrompt, log } from "../util";
+import { increment } from "../db";
+import { Chat, chats, model } from "../model";
+import { reply } from "../twitch";
+import { defineCommand, log } from "../util";
 
 export default defineCommand({
 	name: "ai",
@@ -15,10 +16,14 @@ export default defineCommand({
 			prompt: content,
 		});
 
-		const response = await generate(formatPrompt(ctx.msg));
-		if (!response) return;
+		const chat = new Chat(model, { user: content });
+		const response = await chat.send(ctx.msg);
 
-		await ctx.reply(response);
-		await redis.incr("responses");
+		if (response) {
+			const next = await reply(ctx.msg, response);
+			await increment("responses");
+
+			chats.set(next.id, chat);
+		}
 	},
 });

@@ -49,7 +49,14 @@ auth.addUser(
 		refreshToken: data.refresh_token,
 		expiresIn: data.expires_in,
 		obtainmentTimestamp: data.obtainment_timestamp,
-		scope: ["chat:edit", "chat:read"],
+		scope: [
+			"chat:edit",
+			"chat:read",
+			"channel:bot",
+			"user:bot",
+			"user:read:chat",
+			"user:write:chat",
+		],
 	},
 	["chat"],
 );
