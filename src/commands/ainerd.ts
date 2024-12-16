@@ -11,7 +11,7 @@ export default defineCommand({
 	async exec(content, ctx) {
 		if (!content) return;
 
-		const hasGrounding = process.env.GOOGLE_AI_MODEL?.includes("exp");
+		const hasGrounding = !process.env.GOOGLE_AI_MODEL?.includes("exp");
 
 		log.info({
 			type: "command",
