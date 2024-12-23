@@ -1,5 +1,5 @@
 import { increment } from "../db";
-import { Chat, chats, model } from "../model";
+import { Chat, chats } from "../model";
 import { reply } from "../twitch";
 import { defineCommand, log } from "../util";
 
@@ -10,11 +10,14 @@ export default defineCommand({
 	async exec(content, ctx) {
 		if (!content) return;
 
-		log.info({
-			type: "command",
-			user: ctx.userDisplayName,
-			prompt: content,
-		});
+		log.info(
+			{
+				type: "command",
+				user: ctx.userDisplayName,
+				prompt: content,
+			},
+			content,
+		);
 
 		const chat = new Chat({ user: content });
 		const response = await chat.send(ctx.msg);

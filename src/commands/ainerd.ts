@@ -13,11 +13,14 @@ export default defineCommand({
 
 		const hasGrounding = !process.env.GOOGLE_AI_MODEL?.includes("exp");
 
-		log.info({
-			type: "command",
-			user: ctx.userDisplayName,
-			prompt: content,
-		});
+		log.info(
+			{
+				type: "command",
+				user: ctx.userDisplayName,
+				prompt: content,
+			},
+			content,
+		);
 
 		try {
 			const { response } = await model.generateContent({
@@ -48,13 +51,16 @@ export default defineCommand({
 
 			const grounded = !!response.candidates?.[0].groundingMetadata;
 
-			log.info({
-				response: {
-					raw: rawText,
-					sanitized,
+			log.info(
+				{
+					response: {
+						raw: rawText,
+						sanitized,
+					},
+					grounded,
 				},
-				grounded,
-			});
+				`${sanitized.slice(0, 50)}...`,
+			);
 
 			await ctx.reply(sanitized);
 			await redis.incr("responses");

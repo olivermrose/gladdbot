@@ -52,11 +52,14 @@ export async function handleMessage(channel: string, user: string, text: string,
 				return;
 			}
 
-			log.info({
-				type: "mention",
-				user,
-				prompt: text,
-			});
+			log.info(
+				{
+					type: "mention",
+					user,
+					prompt: text,
+				},
+				text,
+			);
 
 			const chat = new Chat({ user: text });
 

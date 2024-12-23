@@ -43,17 +43,20 @@ export class Chat {
 
 			const { promptTokenCount, candidatesTokenCount } = response.usageMetadata!;
 
-			log.info({
-				response: {
-					raw,
-					sanitized,
+			log.info(
+				{
+					response: {
+						raw,
+						sanitized,
+					},
+					counts: {
+						characters: [sanitized.length, raw.length],
+						tokens: [promptTokenCount, candidatesTokenCount],
+					},
+					ratings: formatRatings(response.candidates?.[0].safetyRatings ?? []),
 				},
-				counts: {
-					characters: [sanitized.length, raw.length],
-					tokens: [promptTokenCount, candidatesTokenCount],
-				},
-				ratings: formatRatings(response.candidates?.[0].safetyRatings ?? []),
-			});
+				`${sanitized.slice(0, 50)}...`,
+			);
 
 			return sanitized;
 		} catch (error) {
