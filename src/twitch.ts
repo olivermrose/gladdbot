@@ -6,11 +6,15 @@ import { bot } from ".";
 export type ChatMessage = Parameters<Parameters<Bot["chat"]["onMessage"]>[0]>[3];
 
 export function send(channel: string, message: string) {
-	return bot.api.chat.sendChatMessageAsApp(process.env.TWITCH_USER_ID!, channel, message);
+	return bot.api.asUser(process.env.TWITCH_USER_ID!, async (ctx) => {
+		return ctx.chat.sendChatMessage(channel, message);
+	});
 }
 
 export function reply(msg: ChatMessage, message: string) {
-	return bot.api.chat.sendChatMessageAsApp(process.env.TWITCH_USER_ID!, msg.channelId!, message, {
-		replyParentMessageId: msg.id,
+	return bot.api.asUser(process.env.TWITCH_USER_ID!, async (ctx) => {
+		return ctx.chat.sendChatMessage(msg.channelId!, message, {
+			replyParentMessageId: msg.id,
+		});
 	});
 }
