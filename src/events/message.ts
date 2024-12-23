@@ -48,7 +48,7 @@ export async function handleMessage(channel: string, user: string, text: string,
 			chats.delete(msg.parentMessageId!);
 			chats.set(next.id, chat);
 		} else {
-			if (/(?<!@)gladdbot(?:ai)?/.test(text) && Math.random() > 0.35) {
+			if (/(?<!@)gladdbot(?:ai)?/i.test(text) && Math.random() > 0.35) {
 				return;
 			}
 
