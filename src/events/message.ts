@@ -48,7 +48,7 @@ export async function handleMessage(channel: string, user: string, text: string,
 			chats.delete(msg.parentMessageId!);
 			chats.set(next.id, chat);
 		} else {
-			if (/(?<!@)gladdbot(?:ai)?/i.test(text) && Math.random() > 0.35) {
+			if (/\bgladdbot\b/i.test(text) && Math.random() > 0.35) {
 				return;
 			}
 
@@ -108,6 +108,14 @@ async function autoSend() {
 
 		const sanitized = sanitize(response.text(), { limit: 350 });
 		const chat = new Chat({ user: ".", model: sanitized });
+
+		log.info(
+			{
+				type: "auto",
+				context: context.messages,
+			},
+			`${sanitized.slice(0, 50)}...`,
+		);
 
 		const next = await send(stream.userId, sanitized);
 		chats.set(next.id, chat);
