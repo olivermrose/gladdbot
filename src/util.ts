@@ -1,7 +1,7 @@
 import pino from "pino";
 import { GoogleGenerativeAIError, type SafetyRating } from "@google/generative-ai";
 import { createBotCommand, type BotCommandContext } from "@twurple/easy-bot";
-import emoteList from "../data/emotes.json";
+import { redis } from "./db";
 import type { ChatMessage } from "./twitch";
 
 export const log = pino({ base: null });
@@ -36,6 +36,7 @@ export function formatPrompt(message: ChatMessage) {
 	return `${user} sent the following prompt\n<PROMPT>${message.text}</PROMPT>`;
 }
 
+const emoteList = await redis.lRange("emotes", 0, -1);
 let emoteRegex: RegExp | undefined;
 
 export function sanitize(text: string, options: { limit: number }) {

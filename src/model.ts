@@ -1,11 +1,17 @@
 import process from "node:process";
 import { GoogleGenerativeAI, HarmBlockThreshold, HarmCategory } from "@google/generative-ai";
 
-import emotes from "../data/emotes.json";
-import instructions from "../data/instructions.txt";
-import users from "../data/users.json";
-
+import { redis } from "./db";
 import { log } from "./util";
+
+let instructions = (await redis.get("instructions"))!;
+
+if (process.env.NODE_ENV === "dev") {
+	instructions = (await import("../instructions.local.txt")).default;
+}
+
+const users = await redis.lRange("users", 0, -1);
+const emotes = await redis.lRange("emotes", 0, -1);
 
 const systemInstruction = instructions
 	.replace("{{USERS}}", users.join(", "))
