@@ -4,11 +4,7 @@ import { GoogleGenerativeAI, HarmBlockThreshold, HarmCategory } from "@google/ge
 import { redis } from "./db";
 import { log } from "./util";
 
-let instructions = (await redis.get("instructions"))!;
-
-if (process.env.NODE_ENV === "dev") {
-	instructions = (await import("../instructions.local.txt")).default;
-}
+const instructions = (await redis.get("instructions"))!;
 
 const users = await redis.lRange("users", 0, -1);
 const emotes = await redis.lRange("emotes", 0, -1);
