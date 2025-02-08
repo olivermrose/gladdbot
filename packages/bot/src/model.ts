@@ -13,7 +13,18 @@ const systemInstruction = instructions
 	.replace("{{USERS}}", users.join(", "))
 	.replace("{{EMOTES}}", emotes.join(", "));
 
-log.info(`System instructions loaded (${systemInstruction.length} characters)`);
+log.info(
+	{
+		full: systemInstruction,
+		fullCharacters: systemInstruction.length,
+		template: instructions,
+		replacements: {
+			users,
+			emotes,
+		},
+	},
+	"System instructions loaded",
+);
 
 const ai = new GoogleGenerativeAI(process.env.GOOGLE_AI_KEY!);
 

@@ -114,7 +114,7 @@ async function autoSend() {
 				type: "auto",
 				context: context.messages,
 			},
-			`${sanitized.slice(0, 50)}...`,
+			sanitized,
 		);
 
 		const next = await send(stream.userId, sanitized);

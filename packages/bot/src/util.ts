@@ -100,6 +100,6 @@ export function handleError(error: unknown) {
 	if (error.message.includes("429")) {
 		log.error(error.message.slice(error.message.indexOf("429") - 1));
 	} else {
-		log.error(error.message);
+		log.error(error);
 	}
 }

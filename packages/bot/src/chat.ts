@@ -55,7 +55,7 @@ export class Chat {
 					},
 					ratings: formatRatings(response.candidates?.[0].safetyRatings ?? []),
 				},
-				`${sanitized.slice(0, 50)}...`,
+				sanitized,
 			);
 
 			return sanitized;

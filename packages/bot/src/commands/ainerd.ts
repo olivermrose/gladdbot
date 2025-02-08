@@ -59,7 +59,7 @@ export default defineCommand({
 					},
 					grounded,
 				},
-				`${sanitized.slice(0, 50)}...`,
+				sanitized,
 			);
 
 			await ctx.reply(sanitized);
