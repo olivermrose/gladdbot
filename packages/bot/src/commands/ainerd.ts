@@ -31,7 +31,7 @@ export default defineCommand({
 					},
 				],
 				systemInstruction:
-					"You are a Twitch chat bot designed to answer questions. Make sure to answer correctly, but add some vulgarity/profanity.",
+					"You are a Twitch chat bot designed to answer questions. Make sure to answer correctly, but add some vulgarity/profanity. Don't add any filler, just answer the question.",
 				tools: hasGrounding
 					? [
 							{
