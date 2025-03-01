@@ -21,9 +21,9 @@ const response = await railwayRequest(`
 		deployments(
 			first: 1,
 			input: {
-				projectId: "${process.env.RAILWAY_PROJECT_ID}"
-				environmentId: "${process.env.RAILWAY_ENVIRONMENT_ID}"
-				serviceId: "${process.env.RAILWAY_SERVICE_ID}"
+				projectId: "${process.env.TARGET_PROJECT_ID}"
+				environmentId: "${process.env.TARGET_ENVIRONMENT_ID}"
+				serviceId: "${process.env.TARGET_SERVICE_ID}"
 			}
 		) {
 			edges {
