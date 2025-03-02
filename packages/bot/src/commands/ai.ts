@@ -1,6 +1,5 @@
+import { ai } from "../";
 import { increment } from "../db";
-import { Chat, chats } from "../model";
-import { reply } from "../twitch";
 import { defineCommand, log } from "../util";
 
 export default defineCommand({
@@ -19,14 +18,14 @@ export default defineCommand({
 			content,
 		);
 
-		const chat = new Chat({ user: content });
+		const chat = ai.startChat({ user: content });
 		const response = await chat.send(ctx.msg);
 
 		if (response) {
-			const next = await reply(ctx.msg, response);
+			await ctx.reply(response);
 			await increment("responses");
 
-			chats.set(next.id, chat);
+			ai.chats.set(ctx.msg.id, chat);
 		}
 	},
 });

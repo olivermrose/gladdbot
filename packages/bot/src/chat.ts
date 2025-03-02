@@ -1,14 +1,12 @@
 import type { ChatSession, Content } from "@google/generative-ai";
-import { model } from "./model";
 import { formatPrompt, formatRatings, handleError, log, sanitize } from "./util";
-import type { ChatMessage } from "./twitch";
+import { ai } from "./";
+import type { ChatMessage } from "./";
 
-interface ChatStart {
+export interface ChatStart {
 	user: string;
-	model?: string;
+	bot?: string;
 }
-
-export const chats = new Map<string, Chat>();
 
 export class Chat {
 	readonly #session: ChatSession;
@@ -20,14 +18,14 @@ export class Chat {
 			parts: [{ text: start.user }],
 		});
 
-		if (start.model) {
+		if (start.bot) {
 			this.#history.push({
 				role: "model",
-				parts: [{ text: start.model }],
+				parts: [{ text: start.bot }],
 			});
 		}
 
-		this.#session = model.startChat({ history: this.#history });
+		this.#session = ai.model.startChat({ history: this.#history });
 	}
 
 	public getHistory() {

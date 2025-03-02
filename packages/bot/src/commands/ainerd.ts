@@ -1,7 +1,7 @@
 import process from "node:process";
 import { DynamicRetrievalMode } from "@google/generative-ai";
+import { ai } from "../";
 import { redis } from "../db";
-import { model } from "../model";
 import { defineCommand, handleError, log, sanitize } from "../util";
 
 export default defineCommand({
@@ -23,7 +23,7 @@ export default defineCommand({
 		);
 
 		try {
-			const { response } = await model.generateContent({
+			const { response } = await ai.model.generateContent({
 				contents: [
 					{
 						role: "user",

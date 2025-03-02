@@ -2,7 +2,7 @@ import pino from "pino";
 import { GoogleGenerativeAIError, type SafetyRating } from "@google/generative-ai";
 import { createBotCommand, type BotCommandContext } from "@twurple/easy-bot";
 import { redis } from "./db";
-import type { ChatMessage } from "./twitch";
+import type { ChatMessage } from "./";
 
 export const log = pino({ base: null });
 
@@ -45,8 +45,8 @@ export function sanitize(text: string, options: { limit: number }) {
 
 	return (
 		truncate(text, options.limit, [...emotes, ".", "?", "!"])
-			// insert zws at the beginning of commands
-			.replace(/^([!/])/, "\u200B$1")
+			// insert reserved unicode tag at the beginning of commands
+			.replace(/^([!/])/, "\u{E0000}$1")
 			.replace(/\n/g, " ")
 			// remove escapes
 			.replace(/\\(.)/g, "$1")

@@ -7,13 +7,13 @@ export class MessageQueue {
 	#messages: Message[] = [];
 
 	public get messages() {
-		this.#sweep()
-		return this.#messages.map((m) => m.content)
+		this.#sweep();
+		return this.#messages.map((m) => m.content);
 	}
 
 	public add(message: string) {
 		this.#messages.push({ timestamp: Date.now(), content: message });
-		this.#sweep()
+		this.#sweep();
 	}
 
 	public clear() {
@@ -21,7 +21,7 @@ export class MessageQueue {
 	}
 
 	#sweep() {
-		const now = Date.now()
+		const now = Date.now();
 		this.#messages = this.#messages.filter((m) => now - m.timestamp <= 2 * 60 * 1000);
 	}
 }
