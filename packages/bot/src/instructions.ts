@@ -33,6 +33,8 @@ export async function fetchInstructions() {
 			fullCharacters: instructions.length,
 			template,
 			replacements: {
+				date,
+				game: stream?.gameName,
 				users,
 				emotes,
 			},
