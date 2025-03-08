@@ -21,6 +21,12 @@ export async function fetchInstructions() {
 	const users = result.map((row) => row.username);
 	const emotes = await redis.lRange("emotes", 0, -1);
 
+	const replacements: Record<string, string | number> = {
+		date,
+		users: users.length,
+		emotes: emotes.length,
+	};
+
 	let instructions = template
 		.replace("{{DATE}}", date)
 		.replace("{{USERS}}", users.join(", "))
@@ -29,10 +35,11 @@ export async function fetchInstructions() {
 	const stream = await bot.api.streams.getStreamByUserId(process.env.TWITCH_STREAMER_ID!);
 
 	if (stream && stream.gameName !== "Just Chatting") {
-		instructions = instructions.replace(
-			"{{GAME}}",
-			stream.gameName === "Just Chatting" ? "nothing and is just chatting." : stream.gameName,
-		);
+		const game =
+			stream.gameName === "Just Chatting" ? "nothing and is just chatting." : stream.gameName;
+
+		instructions = instructions.replace("{{GAME}}", game);
+		replacements.game = game;
 	}
 
 	log.info(
@@ -40,15 +47,13 @@ export async function fetchInstructions() {
 			full: instructions,
 			fullCharacters: instructions.length,
 			template,
-			replacements: {
-				date,
-				game: stream?.gameName,
-				users,
-				emotes,
-			},
+			replacements,
 		},
 		"System instructions loaded",
 	);
 
-	return instructions;
+	return {
+		content: instructions,
+		replacements,
+	};
 }

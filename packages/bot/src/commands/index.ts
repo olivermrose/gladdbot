@@ -1,7 +1,8 @@
 import ai from "./ai";
+import aidebug from "./aidebug";
 import aihelp from "./aihelp";
 import ainerd from "./ainerd";
 import aiping from "./aiping";
 import aistats from "./aistats";
 
-export default [ai, aihelp, ainerd, aiping, aistats];
+export default [ai, aidebug, aihelp, ainerd, aiping, aistats];

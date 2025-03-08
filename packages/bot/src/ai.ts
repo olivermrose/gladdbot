@@ -16,6 +16,11 @@ interface Message {
 	sentAt: Date;
 }
 
+interface SystemInstructions {
+	content: string;
+	replacements: Record<string, string | number>;
+}
+
 export class AI {
 	public readonly model: GenerativeModel;
 	public readonly chats = new Map<string, Chat>();
@@ -28,13 +33,13 @@ export class AI {
 
 	public constructor(
 		public readonly bot: Bot,
-		instructions: string,
+		public readonly instructions: SystemInstructions,
 	) {
 		const genAi = new GoogleGenerativeAI(process.env.GOOGLE_AI_KEY!);
 
 		this.model = genAi.getGenerativeModel({
 			model: process.env.GOOGLE_AI_MODEL ?? "gemini-1.5-pro",
-			systemInstruction: instructions,
+			systemInstruction: instructions.content,
 			safetySettings: [
 				{
 					category: HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT,

@@ -11,7 +11,7 @@ export type ChatMessage = Parameters<Parameters<Bot["chat"]["onMessage"]>[0]>[3]
 
 export const bot = new Bot({
 	authProvider: auth,
-	channels: ["Gladd", "xiBread_"],
+	channels: ["Gladd", "x1Bread_"],
 	commands,
 });
 

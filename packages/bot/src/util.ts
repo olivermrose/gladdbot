@@ -11,15 +11,25 @@ interface Command {
 	aliases?: string[];
 	globalCooldown?: number;
 	userCooldown?: number;
+	modOnly?: boolean;
 	exec(content: string, ctx: BotCommandContext): void;
 }
 
 export function defineCommand(command: Command) {
-	return createBotCommand(command.name, (args, ctx) => command.exec(args.join(" "), ctx), {
-		aliases: command.aliases,
-		globalCooldown: command.globalCooldown ?? 5,
-		userCooldown: command.userCooldown,
-	});
+	return createBotCommand(
+		command.name,
+		(args, ctx) => {
+			if (command.modOnly && !ctx.msg.userInfo.isBroadcaster && !ctx.msg.userInfo.isMod)
+				return;
+
+			command.exec(args.join(" "), ctx);
+		},
+		{
+			aliases: command.aliases,
+			globalCooldown: command.globalCooldown ?? 5,
+			userCooldown: command.userCooldown,
+		},
+	);
 }
 
 export function formatPrompt(message: ChatMessage) {
