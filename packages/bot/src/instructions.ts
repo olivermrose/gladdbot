@@ -1,5 +1,5 @@
 import process from "node:process";
-import { redis } from "./db";
+import { redis, sql } from "./db";
 import { log } from "./util";
 import { bot } from ".";
 
@@ -10,7 +10,15 @@ export async function fetchInstructions() {
 		dateStyle: "medium",
 	});
 
-	const users = await redis.lRange("users", 0, -1);
+	const result = await sql<{ username: string }[]>`
+		SELECT username
+		FROM messages
+		GROUP BY username
+		HAVING COUNT(*) > 500
+		ORDER BY COUNT(*) DESC
+	`;
+
+	const users = result.map((row) => row.username);
 	const emotes = await redis.lRange("emotes", 0, -1);
 
 	let instructions = template
