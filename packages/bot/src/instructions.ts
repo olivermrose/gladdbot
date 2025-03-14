@@ -34,7 +34,7 @@ export async function fetchInstructions() {
 
 	const stream = await bot.api.streams.getStreamByUserId(process.env.TWITCH_STREAMER_ID!);
 
-	if (stream && stream.gameName !== "Just Chatting") {
+	if (stream) {
 		const game =
 			stream.gameName === "Just Chatting" ? "nothing and is just chatting." : stream.gameName;
 
