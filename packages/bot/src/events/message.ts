@@ -1,5 +1,6 @@
 import { ai } from "../";
 import { increment } from "../db";
+import { trackEmotes } from "../emotes";
 import { log } from "../util";
 import type { ChatMessage } from "../";
 import type { Chat } from "../chat";
@@ -8,6 +9,8 @@ const BOT_USERNAMES = ["blerp", "fossabot", "gladdbotai", "nightbot"];
 
 export async function handleMessage(channel: string, user: string, text: string, msg: ChatMessage) {
 	if (BOT_USERNAMES.includes(user) || text.startsWith("!")) return;
+
+	await trackEmotes(text.split(" "), user);
 
 	// Chat logic
 	if (/@?gladdbot(?:ai)?/i.test(text)) {
