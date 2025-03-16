@@ -22,6 +22,6 @@ export class MessageQueue {
 
 	#sweep() {
 		const now = Date.now();
-		this.#messages = this.#messages.filter((m) => now - m.timestamp <= 5 * 60 * 1000);
+		this.#messages = this.#messages.filter((m) => now - m.timestamp <= 3 * 60 * 1000);
 	}
 }
