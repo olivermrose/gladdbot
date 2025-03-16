@@ -4,8 +4,8 @@ import { defineCommand, log } from "../util";
 
 export default defineCommand({
 	name: "ai",
-	globalCooldown: 15,
-	userCooldown: 20,
+	globalCooldown: 10,
+	userCooldown: 15,
 	async exec(content, ctx) {
 		if (!content) return;
 
