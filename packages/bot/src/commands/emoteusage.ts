@@ -41,7 +41,7 @@ export default defineCommand({
 		const data = await sql`
 			SELECT name, COUNT(*) AS usage
 			FROM emotes
-			WHERE LOWER(username) = ${user.replace("@", "").toLowerCase()}
+			WHERE username ILIKE ${user.replace("@", "")}
 			GROUP BY name
 			ORDER BY usage DESC
 			LIMIT 10
@@ -56,7 +56,7 @@ export default defineCommand({
 async function usageForUser(emote: string, user: string, ctx: BotCommandContext) {
 	const [{ count }] = await sql`
 		SELECT COUNT(*) FROM emotes
-		WHERE name = ${emote} AND LOWER(username) = ${user.replace("@", "").toLowerCase()}
+		WHERE name = ${emote} AND username ILIKE ${user.replace("@", "")}
 	`;
 
 	if (!count) {
