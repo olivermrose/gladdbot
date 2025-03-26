@@ -1,8 +1,9 @@
 import process from "node:process";
-import { DynamicRetrievalMode } from "@google/generative-ai";
-import { ai } from "../";
+import { GoogleGenAI } from "@google/genai";
 import { redis } from "../db";
 import { defineCommand, handleError, log, sanitize } from "../util";
+
+const ai = new GoogleGenAI({ apiKey: process.env.GOOGLE_AI_KEY });
 
 export default defineCommand({
 	name: "ainerd",
@@ -23,41 +24,25 @@ export default defineCommand({
 		);
 
 		try {
-			const { response } = await ai.model.generateContent({
-				contents: [
-					{
-						role: "user",
-						parts: [{ text: `${content}` }],
-					},
-				],
-				systemInstruction:
-					"You are a Twitch chat bot designed to answer questions. Make sure to answer correctly, but add some vulgarity/profanity. Don't add any filler, just answer the question.",
-				tools: hasGrounding
-					? [
-							{
-								googleSearchRetrieval: {
-									dynamicRetrievalConfig: {
-										mode: DynamicRetrievalMode.MODE_DYNAMIC,
-										dynamicThreshold: 0.5,
-									},
-								},
-							},
-						]
-					: undefined,
+			const response = await ai.models.generateContent({
+				model: hasGrounding ? process.env.GOOGLE_AI_MODEL! : "gemini-2.0-flash",
+				contents: content,
+				config: {
+					systemInstruction:
+						"You are a Twitch chat bot designed to answer questions. Make sure to answer correctly, but add some vulgarity/profanity. Don't add any filler, just answer the question.",
+					tools: [{ googleSearch: {} }],
+				},
 			});
 
-			const rawText = response.text();
-			const sanitized = sanitize(rawText, { limit: 350 });
-
-			const grounded = !!response.candidates?.[0].groundingMetadata;
+			const raw = response.text ?? "";
+			const sanitized = sanitize(raw, { limit: 350 });
 
 			log.info(
 				{
 					response: {
-						raw: rawText,
+						raw,
 						sanitized,
 					},
-					grounded,
 				},
 				sanitized,
 			);

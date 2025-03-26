@@ -1,6 +1,8 @@
 import process from "node:process";
-import { GoogleGenerativeAI, HarmBlockThreshold, HarmCategory } from "@google/generative-ai";
-import type { GenerativeModel } from "@google/generative-ai";
+import { GoogleGenAI, HarmBlockThreshold, HarmCategory } from "@google/genai";
+import type { GenerateContentParameters } from "@google/genai";
+// import { GoogleGenerativeAI, HarmBlockThreshold, HarmCategory } from "@google/generative-ai";
+// import type { GenerativeModel } from "@google/generative-ai";
 import type { Bot } from "@twurple/easy-bot";
 import { Cron } from "croner";
 import { Chat } from "./chat";
@@ -21,11 +23,41 @@ interface SystemInstructions {
 	replacements: Record<string, string | number>;
 }
 
+const defaultParams = {
+	model: process.env.GOOGLE_AI_MODEL ?? "gemini-2.0-flash",
+	config: {
+		systemInstruction: "",
+		safetySettings: [
+			{
+				category: HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT,
+				threshold: HarmBlockThreshold.BLOCK_NONE,
+			},
+			{
+				category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
+				threshold: HarmBlockThreshold.BLOCK_NONE,
+			},
+			{
+				category: HarmCategory.HARM_CATEGORY_HARASSMENT,
+				threshold: HarmBlockThreshold.BLOCK_NONE,
+			},
+			{
+				category: HarmCategory.HARM_CATEGORY_HATE_SPEECH,
+				threshold: HarmBlockThreshold.BLOCK_ONLY_HIGH,
+			},
+		],
+		// maxOutputTokens: 100,
+		temperature: 1.5,
+	},
+} satisfies Omit<GenerateContentParameters, "contents">;
+
 export class AI {
-	public readonly model: GenerativeModel;
+	public readonly sdk = new GoogleGenAI({ apiKey: process.env.GOOGLE_AI_KEY! });
+
 	public readonly chats = new Map<string, Chat>();
 	public readonly context = new MessageQueue();
+
 	public buffer: Message[] = [];
+	public history: string[] = [];
 
 	readonly #autoSendEnabled = Number(process.env.AUTO_SEND_ENABLED);
 	readonly #autoSendInterval = Number(process.env.AUTO_SEND_INTERVAL);
@@ -35,40 +67,41 @@ export class AI {
 		public readonly bot: Bot,
 		public readonly instructions: SystemInstructions,
 	) {
-		const genAi = new GoogleGenerativeAI(process.env.GOOGLE_AI_KEY!);
-
-		this.model = genAi.getGenerativeModel({
-			model: process.env.GOOGLE_AI_MODEL ?? "gemini-1.5-pro",
-			systemInstruction: instructions.content,
-			safetySettings: [
-				{
-					category: HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT,
-					threshold: HarmBlockThreshold.BLOCK_NONE,
-				},
-				{
-					category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
-					threshold: HarmBlockThreshold.BLOCK_NONE,
-				},
-				{
-					category: HarmCategory.HARM_CATEGORY_HARASSMENT,
-					threshold: HarmBlockThreshold.BLOCK_NONE,
-				},
-				{
-					category: HarmCategory.HARM_CATEGORY_HATE_SPEECH,
-					threshold: HarmBlockThreshold.BLOCK_ONLY_HIGH,
-				},
-			],
-			generationConfig: {
-				maxOutputTokens: 100,
-				temperature: 1.5,
-			},
-		});
+		defaultParams.config.systemInstruction = instructions.content;
 
 		this.#initJobs();
 	}
 
+	public async generate(content: string) {
+		const response = await this.sdk.models.generateContent({
+			...defaultParams,
+			contents: content,
+		});
+
+		return response;
+	}
+
 	public startChat(start: ChatStart) {
-		return new Chat(start);
+		const history = [
+			{
+				role: "user",
+				parts: [{ text: start.user }],
+			},
+		];
+
+		if (start.bot) {
+			history.push({
+				role: "model",
+				parts: [{ text: start.bot }],
+			});
+		}
+
+		const session = this.sdk.chats.create({
+			...defaultParams,
+			history,
+		});
+
+		return new Chat(session);
 	}
 
 	public async send(channel: string, message: string) {
@@ -126,13 +159,13 @@ export class AI {
 		if (intervals < this.#autoSendInterval / 5) return;
 
 		try {
-			const { response } = await this.model.generateContent(`
-			Respond to ONLY ONE of these messages without repeating what it said.
-			===================
-			${this.context.messages.join("\n")}
-		`);
+			const response = await this.generate(`
+				Respond to ONLY ONE of these messages without repeating what it said.
+				===================
+				${this.context.messages.join("\n")}
+			`);
 
-			const sanitized = sanitize(response.text(), { limit: 350 });
+			const sanitized = sanitize(response.text!, { limit: 350 });
 			const chat = this.startChat({ user: ".", bot: sanitized });
 
 			log.info(

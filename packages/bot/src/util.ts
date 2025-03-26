@@ -1,8 +1,9 @@
 import pino from "pino";
-import { GoogleGenerativeAIError, type SafetyRating } from "@google/generative-ai";
+// import { GoogleGenerativeAIError, type SafetyRating } from "@google/generative-ai";
 import { createBotCommand, type BotCommandContext } from "@twurple/easy-bot";
 import { redis } from "./db";
 import type { ChatMessage } from "./";
+import type { SafetyRating } from "@google/genai";
 
 export const log = pino({ base: null });
 
@@ -99,17 +100,11 @@ function truncate(text: string, length: number, terminators: string[]) {
 
 export function formatRatings(ratings: SafetyRating[]) {
 	return ratings.reduce<Record<string, string>>(
-		(acc, rating) => ({ ...acc, [rating.category]: rating.probability }),
+		(acc, rating) => ({ ...acc, [rating.category!]: rating.probability! }),
 		{},
 	);
 }
 
 export function handleError(error: unknown) {
-	if (!(error instanceof GoogleGenerativeAIError)) return;
-
-	if (error.message.includes("429")) {
-		log.error(error.message.slice(error.message.indexOf("429") - 1));
-	} else {
-		log.error(error);
-	}
+	log.error(error);
 }

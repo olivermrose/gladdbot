@@ -11,7 +11,7 @@ export default defineCommand({
 		const responsesAuto = await get("responses_auto");
 
 		await ctx.reply(
-			`I've responded to ${responses + responsesMention} prompts and sent ${responsesAuto} messages on my own Chatting`,
+			`I've responded to ${responses + responsesMention} prompts and sent ${responsesAuto} messages on my own (${responses + responsesMention + responsesAuto} total) Chatting`,
 		);
 	},
 });
