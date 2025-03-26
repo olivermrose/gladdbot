@@ -1,5 +1,4 @@
 import pino from "pino";
-// import { GoogleGenerativeAIError, type SafetyRating } from "@google/generative-ai";
 import { createBotCommand, type BotCommandContext } from "@twurple/easy-bot";
 import { redis } from "./db";
 import type { ChatMessage } from "./";

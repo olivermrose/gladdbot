@@ -1,8 +1,6 @@
 import process from "node:process";
 import { GoogleGenAI, HarmBlockThreshold, HarmCategory } from "@google/genai";
 import type { GenerateContentParameters } from "@google/genai";
-// import { GoogleGenerativeAI, HarmBlockThreshold, HarmCategory } from "@google/generative-ai";
-// import type { GenerativeModel } from "@google/generative-ai";
 import type { Bot } from "@twurple/easy-bot";
 import { Cron } from "croner";
 import { Chat } from "./chat";
