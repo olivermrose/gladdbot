@@ -33,10 +33,6 @@ export async function handleMessage(channel: string, user: string, text: string,
 			await ai.bot.reply(channel, response, msg);
 			await increment("responses");
 		} else {
-			if (/\bgladdbot\b/i.test(text) && Math.random() > 0.99) {
-				return;
-			}
-
 			log.info(
 				{
 					type: "mention",
