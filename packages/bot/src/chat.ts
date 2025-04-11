@@ -1,5 +1,5 @@
 import type { Chat as AiChat } from "@google/genai";
-import { formatPrompt, formatRatings, handleError, log, sanitize } from "./util";
+import { formatPrompt, formatRatings, handleError, log, sanitize, stripMention } from "./util";
 import type { ChatMessage } from "./";
 
 export interface ChatStart {
@@ -21,7 +21,7 @@ export class Chat {
 			});
 
 			const raw = response.text ?? "";
-			const sanitized = sanitize(raw, { limit: 350 });
+			const sanitized = stripMention(sanitize(raw, { limit: 350 }));
 
 			const { promptTokenCount, candidatesTokenCount } = response.usageMetadata!;
 

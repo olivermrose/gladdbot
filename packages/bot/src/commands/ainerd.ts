@@ -1,7 +1,7 @@
 import process from "node:process";
 import { GoogleGenAI } from "@google/genai";
 import { redis } from "../db";
-import { defineCommand, handleError, log, sanitize } from "../util";
+import { defineCommand, handleError, log, sanitize, stripMention } from "../util";
 
 const ai = new GoogleGenAI({ apiKey: process.env.GOOGLE_AI_KEY });
 
@@ -35,7 +35,7 @@ export default defineCommand({
 			});
 
 			const raw = response.text ?? "";
-			const sanitized = sanitize(raw, { limit: 350 });
+			const sanitized = stripMention(sanitize(raw, { limit: 350 }));
 
 			log.info(
 				{

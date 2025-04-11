@@ -71,6 +71,10 @@ export function sanitize(text: string, options: { limit: number }) {
 	);
 }
 
+export function stripMention(text: string) {
+	return text.replace(/^@[\w_]+ /, "");
+}
+
 function truncate(text: string, length: number, terminators: string[]) {
 	if (text.length <= length) return text;
 	let truncated = text.slice(0, length);
