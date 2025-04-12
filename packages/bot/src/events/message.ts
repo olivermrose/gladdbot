@@ -13,7 +13,11 @@ export async function handleMessage(channel: string, user: string, text: string,
 	await trackEmotes(text.split(" "), user);
 
 	if (hasTriangle(text)) {
-		const { text } = await ai.generate(`Tell ${user} to stop spamming emotes and shut up.`);
+		const { text } = await ai.generate(
+			`Tell ${user} to stop spamming emotes and shut up.`,
+			"gemini-2.0-flash",
+		);
+
 		await ai.bot.say(channel, text!);
 	}
 
