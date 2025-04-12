@@ -12,6 +12,11 @@ export async function handleMessage(channel: string, user: string, text: string,
 
 	await trackEmotes(text.split(" "), user);
 
+	if (hasTriangle(text)) {
+		const { text } = await ai.generate(`Tell ${user} to stop spamming emotes and shut up.`);
+		await ai.bot.say(channel, text!);
+	}
+
 	// Chat logic
 	if (/@?gladdbot(?:ai)?/i.test(text)) {
 		if (msg.isReply) {
@@ -69,4 +74,66 @@ export async function handleMessage(channel: string, user: string, text: string,
 	if (ai.buffer.length >= 100) {
 		await ai.flush(true);
 	}
+}
+
+let lastMessage: string | null = null;
+let currentLevel = 0;
+let direction: "up" | "down" = "up";
+let interrupted = false;
+
+function hasTriangle(text: string): boolean {
+	const words = text.trim().replace("\u{E0000}", "").split(/\s+/);
+	const unique = new Set(words);
+
+	if (unique.size !== 1) {
+		reset();
+		return false;
+	}
+
+	const word = words[0];
+	const count = words.length;
+
+	if (lastMessage === null || word !== lastMessage) {
+		lastMessage = word;
+		currentLevel = count;
+		direction = "up";
+		interrupted = false;
+
+		return false;
+	}
+
+	if (interrupted) return true;
+
+	if (direction === "up") {
+		if (count === currentLevel + 1) {
+			currentLevel++;
+
+			if (currentLevel === 3) {
+				interrupted = true;
+				reset();
+				return true;
+			}
+		} else if (count === currentLevel - 1) {
+			direction = "down";
+			currentLevel--;
+		} else {
+			reset();
+		}
+	} else {
+		if (count === currentLevel - 1) {
+			currentLevel--;
+			if (currentLevel === 0) reset();
+		} else {
+			reset();
+		}
+	}
+
+	return false;
+}
+
+function reset() {
+	lastMessage = null;
+	currentLevel = 0;
+	direction = "up";
+	interrupted = false;
 }
