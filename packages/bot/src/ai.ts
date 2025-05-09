@@ -70,9 +70,10 @@ export class AI {
 		this.#initJobs();
 	}
 
-	public async generate(content: string) {
+	public async generate(content: string, model = defaultParams.model) {
 		const response = await this.sdk.models.generateContent({
 			...defaultParams,
+			model,
 			contents: content,
 		});
 
