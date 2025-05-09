@@ -8,18 +8,18 @@ import type { Chat } from "../chat";
 const BOT_USERNAMES = ["blerp", "fossabot", "gladdbotai", "nightbot"];
 
 export async function handleMessage(channel: string, user: string, text: string, msg: ChatMessage) {
-	if (BOT_USERNAMES.includes(user) || text.startsWith("!")) return;
-
-	await trackEmotes(text.split(" "), user);
-
-	if (hasTriangle(text)) {
+	if (isEmoteSpam(msg)) {
 		const { text } = await ai.generate(
-			`Tell ${user} to stop spamming emotes and shut up.`,
+			`Tell ${user} to stop spamming emotes and shut the fuck up; be super rude.`,
 			"gemini-2.0-flash",
 		);
 
 		await ai.bot.say(channel, text!);
 	}
+
+	if (BOT_USERNAMES.includes(user) || text.startsWith("!")) return;
+
+	await trackEmotes(text.split(" "), user);
 
 	// Chat logic
 	if (/@?gladdbot(?:ai)?/i.test(text)) {
@@ -80,64 +80,39 @@ export async function handleMessage(channel: string, user: string, text: string,
 	}
 }
 
-let lastMessage: string | null = null;
-let currentLevel = 0;
-let direction: "up" | "down" = "up";
-let interrupted = false;
+const userMessages = new Map<string, string[]>();
 
-function hasTriangle(text: string): boolean {
+function getRepeat(text: string) {
 	const words = text.trim().replace("\u{E0000}", "").split(/\s+/);
-	const unique = new Set(words);
+	if (words.length === 0) return null;
 
-	if (unique.size !== 1) {
-		reset();
-		return false;
+	if (words.every((w) => w === words[0])) {
+		return words[0];
 	}
 
-	const word = words[0];
-	const count = words.length;
-
-	if (lastMessage === null || word !== lastMessage) {
-		lastMessage = word;
-		currentLevel = count;
-		direction = "up";
-		interrupted = false;
-
-		return false;
-	}
-
-	if (interrupted) return true;
-
-	if (direction === "up") {
-		if (count === currentLevel + 1) {
-			currentLevel++;
-
-			if (currentLevel === 3) {
-				interrupted = true;
-				reset();
-				return true;
-			}
-		} else if (count === currentLevel - 1) {
-			direction = "down";
-			currentLevel--;
-		} else {
-			reset();
-		}
-	} else {
-		if (count === currentLevel - 1) {
-			currentLevel--;
-			if (currentLevel === 0) reset();
-		} else {
-			reset();
-		}
-	}
-
-	return false;
+	return null;
 }
 
-function reset() {
-	lastMessage = null;
-	currentLevel = 0;
-	direction = "up";
-	interrupted = false;
+function isEmoteSpam(msg: ChatMessage): boolean {
+	const repeat = getRepeat(msg.text);
+	if (!repeat) return false;
+
+	if (!userMessages.has(msg.userInfo.userId)) {
+		userMessages.set(msg.userInfo.userId, []);
+	}
+
+	const messages = userMessages.get(msg.userInfo.userId)!;
+	messages.push(repeat);
+
+	if (messages.length > 3) {
+		messages.shift();
+	}
+
+	for (const id of userMessages.keys()) {
+		if (id !== msg.userInfo.userId) {
+			userMessages.set(id, []);
+		}
+	}
+
+	return messages.length === 3 && messages.every((m) => m === repeat);
 }
