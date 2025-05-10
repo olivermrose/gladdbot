@@ -1,6 +1,6 @@
 import { ai } from "../";
 import { increment } from "../db";
-import { trackEmotes } from "../emotes";
+import { emotes, trackEmotes } from "../emotes";
 import { log } from "../util";
 import type { ChatMessage } from "../";
 import type { Chat } from "../chat";
@@ -95,7 +95,7 @@ function getRepeat(text: string) {
 
 function isEmoteSpam(msg: ChatMessage): boolean {
 	const repeat = getRepeat(msg.text);
-	if (!repeat) return false;
+	if (!repeat || !emotes.has(repeat)) return false;
 
 	if (!userMessages.has(msg.userInfo.userId)) {
 		userMessages.set(msg.userInfo.userId, []);
