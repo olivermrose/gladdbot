@@ -18,8 +18,15 @@ export default defineCommand({
 			LIMIT 10
 		`;
 
-		const todayDate = today.toLocaleString("en-US", { dateStyle: "short" });
-		const weekAgoDate = weekAgo.toLocaleString("en-US", { dateStyle: "short" });
+		const todayDate = today.toLocaleString("en-US", {
+			dateStyle: "short",
+			timeZone: "America/New_York",
+		});
+
+		const weekAgoDate = weekAgo.toLocaleString("en-US", {
+			dateStyle: "short",
+			timeZone: "America/New_York",
+		});
 
 		const top = rows.map((row, i) => `${i + 1}. ${row.username} (${row.count})`).join(" | ");
 
