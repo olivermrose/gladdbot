@@ -8,15 +8,6 @@ import type { Chat } from "../chat";
 const BOT_USERNAMES = ["blerp", "fossabot", "gladdbotai", "nightbot"];
 
 export async function handleMessage(channel: string, user: string, text: string, msg: ChatMessage) {
-	if (isEmoteSpam(msg)) {
-		const { text } = await ai.generate(
-			`Tell ${user} to stop spamming emotes and shut the fuck up; be super rude.`,
-			"gemini-2.0-flash",
-		);
-
-		await ai.bot.say(channel, text!);
-	}
-
 	if (BOT_USERNAMES.includes(user) || text.startsWith("!")) return;
 
 	await trackEmotes(text.split(" "), user);
@@ -78,41 +69,4 @@ export async function handleMessage(channel: string, user: string, text: string,
 	if (ai.buffer.length >= 100) {
 		await ai.flush(true);
 	}
-}
-
-const userMessages = new Map<string, string[]>();
-
-function getRepeat(text: string) {
-	const words = text.trim().replace("\u{E0000}", "").split(/\s+/);
-	if (words.length === 0) return null;
-
-	if (words.every((w) => w === words[0])) {
-		return words[0];
-	}
-
-	return null;
-}
-
-function isEmoteSpam(msg: ChatMessage): boolean {
-	const repeat = getRepeat(msg.text);
-	if (!repeat || !emotes.has(repeat)) return false;
-
-	if (!userMessages.has(msg.userInfo.userId)) {
-		userMessages.set(msg.userInfo.userId, []);
-	}
-
-	const messages = userMessages.get(msg.userInfo.userId)!;
-	messages.push(repeat);
-
-	if (messages.length > 3) {
-		messages.shift();
-	}
-
-	for (const id of userMessages.keys()) {
-		if (id !== msg.userInfo.userId) {
-			userMessages.set(id, []);
-		}
-	}
-
-	return messages.length === 3 && messages.every((m) => m === repeat);
 }
