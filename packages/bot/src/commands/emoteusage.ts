@@ -5,6 +5,7 @@ import { defineCommand } from "../util";
 
 export default defineCommand({
 	name: "emoteusage",
+	ownerOnly: true,
 	userCooldown: 10,
 	async exec(content, ctx) {
 		const args = content.split(" ").filter(Boolean);

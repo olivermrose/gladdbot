@@ -11,6 +11,7 @@ interface Command {
 	aliases?: string[];
 	globalCooldown?: number;
 	userCooldown?: number;
+	ownerOnly?: boolean;
 	modOnly?: boolean;
 	exec(content: string, ctx: BotCommandContext): void;
 }
@@ -19,8 +20,13 @@ export function defineCommand(command: Command) {
 	return createBotCommand(
 		command.name,
 		(args, ctx) => {
-			if (command.modOnly && !ctx.msg.userInfo.isBroadcaster && !ctx.msg.userInfo.isMod)
+			if (command.ownerOnly && ctx.msg.userInfo.userId !== process.env.TWITCH_OWNER_ID) {
 				return;
+			}
+
+			if (command.modOnly && !ctx.msg.userInfo.isBroadcaster && !ctx.msg.userInfo.isMod) {
+				return;
+			}
 
 			command.exec(args.join(" "), ctx);
 		},

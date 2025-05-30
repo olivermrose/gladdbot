@@ -4,6 +4,7 @@ import { defineCommand } from "../util";
 export default defineCommand({
 	name: "topchatter",
 	aliases: ["topchatters", "top10"],
+	ownerOnly: true,
 	async exec(_, ctx) {
 		const today = new Date();
 
