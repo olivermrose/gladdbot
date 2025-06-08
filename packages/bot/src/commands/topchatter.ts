@@ -4,9 +4,13 @@ import { defineCommand } from "../util";
 export default defineCommand({
 	name: "topchatter",
 	aliases: ["topchatters", "top10"],
-	ownerOnly: true,
 	async exec(_, ctx) {
 		const today = new Date();
+
+		if (today.getDay() !== 5 && !ctx.msg.userInfo.isMod) {
+			await ctx.reply("No cheating! Try again when it's Friday.");
+			return;
+		}
 
 		const weekAgo = new Date();
 		weekAgo.setDate(weekAgo.getDate() - 7);
