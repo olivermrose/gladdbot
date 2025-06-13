@@ -7,7 +7,7 @@ export default defineCommand({
 	async exec(_, ctx) {
 		const today = new Date();
 
-		if (today.getDay() !== 5 && !ctx.msg.userInfo.isMod) {
+		if (today.getDay() !== 5) {
 			await ctx.reply("No cheating! Try again when it's Friday.");
 			return;
 		}
