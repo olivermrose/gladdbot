@@ -1,6 +1,6 @@
 import { ai } from "../";
 import { increment } from "../db";
-import { emotes, trackEmotes } from "../emotes";
+import { trackEmotes } from "../emotes";
 import { log } from "../util";
 import type { ChatMessage } from "../";
 import type { Chat } from "../chat";

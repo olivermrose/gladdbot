@@ -38,7 +38,7 @@ export function defineCommand(command: Command) {
 	);
 }
 
-export function formatPrompt(message: ChatMessage) {
+export function formatPrompt(message: ChatMessage, history: string[] = []) {
 	let user = message.userInfo.displayName;
 	const badges: string[] = [];
 
@@ -49,7 +49,13 @@ export function formatPrompt(message: ChatMessage) {
 		user += ` (${badges.join(", ")})`;
 	}
 
-	return `${user} sent the following prompt\n<PROMPT>${message.text}</PROMPT>`;
+	let prompt = `${user} sent the following prompt\n<PROMPT>${message.text}</PROMPT>`;
+
+	if (history.length) {
+		prompt += `\nThese are the last 100 messages sent by them\n<HISTORY>${history.join("\n")}</HISTORY>`;
+	}
+
+	return prompt;
 }
 
 const emoteList = await redis.lRange("emotes", 0, -1);

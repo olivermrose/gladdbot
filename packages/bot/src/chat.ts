@@ -1,4 +1,5 @@
 import type { Chat as AiChat } from "@google/genai";
+import { sql } from "./db";
 import { formatPrompt, formatRatings, handleError, log, sanitize, stripMention } from "./util";
 import type { ChatMessage } from "./";
 
@@ -16,8 +17,17 @@ export class Chat {
 
 	public async send(msg: ChatMessage): Promise<string | undefined> {
 		try {
+			const messages = await sql<{ content: string }[]>`
+				SELECT content FROM messages
+				WHERE username = ${msg.userInfo.displayName}
+				ORDER BY id DESC LIMIT 100
+			`;
+
 			const response = await this.session.sendMessage({
-				message: formatPrompt(msg),
+				message: formatPrompt(
+					msg,
+					messages.reverse().map((m) => m.content),
+				),
 			});
 
 			const raw = response.text ?? "";
