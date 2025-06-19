@@ -11,6 +11,7 @@ import type { ChatStart } from "./chat";
 import type { ChatMessage } from "./";
 
 interface Message {
+	userId: string;
 	username: string;
 	content: string;
 	sentAt: Date;
@@ -127,12 +128,13 @@ export class AI {
 
 		try {
 			await sql`
-					INSERT INTO messages (
-						username,
-						content,
-						sent_at
-					) VALUES ${sql(toInsert.map((m) => [m.username, m.content, m.sentAt.toISOString()]))}
-				`;
+				INSERT INTO messages (
+					user_id,
+					username,
+					content,
+					sent_at
+				) VALUES ${sql(toInsert.map((m) => [m.userId, m.username, m.content, m.sentAt.toISOString()]))}
+			`;
 		} catch (error) {
 			log.error(error);
 			this.buffer = toInsert;

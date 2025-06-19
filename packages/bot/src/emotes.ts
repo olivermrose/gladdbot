@@ -32,7 +32,7 @@ query {
 	}
 }
 
-export async function trackEmotes(parts: string[], username: string) {
+export async function trackEmotes(parts: string[], id: string, username: string) {
 	const found: string[] = [];
 
 	for (const part of parts) {
@@ -41,8 +41,8 @@ export async function trackEmotes(parts: string[], username: string) {
 
 	if (found.length) {
 		await sql`
-			INSERT INTO emotes (name, username)
-			VALUES ${sql(found.map((name) => [name, username]))}
+			INSERT INTO emotes (name, user_id, username)
+			VALUES ${sql(found.map((name) => [name, id, username]))}
 		`;
 	}
 }

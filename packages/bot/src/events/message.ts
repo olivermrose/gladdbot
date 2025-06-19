@@ -10,7 +10,7 @@ const BOT_USERNAMES = ["blerp", "fossabot", "gladdbotai", "nightbot"];
 export async function handleMessage(channel: string, user: string, text: string, msg: ChatMessage) {
 	if (BOT_USERNAMES.includes(user) || text.startsWith("!")) return;
 
-	await trackEmotes(text.split(" "), user);
+	await trackEmotes(text.split(" "), msg.userInfo.userId, user);
 
 	// Chat logic
 	if (/@?gladdbot(?:ai)?/i.test(text)) {
@@ -61,6 +61,7 @@ export async function handleMessage(channel: string, user: string, text: string,
 	}
 
 	ai.buffer.push({
+		userId: msg.userInfo.userId,
 		username: msg.userInfo.displayName,
 		content: text,
 		sentAt: new Date(),
