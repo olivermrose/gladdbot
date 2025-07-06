@@ -67,7 +67,7 @@ export async function handleMessage(channel: string, user: string, text: string,
 		sentAt: new Date(),
 	});
 
-	if (ai.buffer.length >= 100) {
+	if (ai.buffer.length >= 100 && msg.channelId === process.env.TWITCH_STREAMER_ID) {
 		await ai.flush(true);
 	}
 }
