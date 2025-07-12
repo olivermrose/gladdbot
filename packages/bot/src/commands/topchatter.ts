@@ -1,5 +1,5 @@
 import { sql } from "../db";
-import { defineCommand } from "../util";
+import { defineCommand, log } from "../util";
 
 export default defineCommand({
 	name: "topchatter",
@@ -21,6 +21,8 @@ export default defineCommand({
 
 		const weekAgo = new Date(lastFriday);
 		weekAgo.setDate(lastFriday.getDate() - 7);
+
+		log.info({ today, lastFriday, weekAgo });
 
 		const rows = await sql<{ count: number; username: string }[]>`
 			SELECT count(content), username FROM messages
