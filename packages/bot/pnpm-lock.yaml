@@ -20,6 +20,9 @@ importers:
       croner:
         specifier: ^9.0.0
         version: 9.0.0
+      dayjs:
+        specifier: ^1.11.13
+        version: 1.11.13
       pino:
         specifier: ^9.6.0
         version: 9.6.0
@@ -507,6 +510,9 @@ packages:
 
   dateformat@4.6.3:
     resolution: {integrity: sha512-2P0p0pFGzHS5EMnhdxQi7aJN+iMheud0UhG4dlE1DLAlvL8JHjJJTX/CSm4JXwV0Ka5nGk3zC5mcb5bUQUxxMA==}
+
+  dayjs@1.11.13:
+    resolution: {integrity: sha512-oaMBel6gjolK862uaPQOVTA7q3TZhuSvuMQAAglQDOWYO9A91IrAOUJEyKVlqJlHE0vq5p5UXxzdPfMH/x6xNg==}
 
   debug@4.4.0:
     resolution: {integrity: sha512-6WTZ/IxCY/T6BALoZHaE4ctp9xm+Z5kY/pzYaCHRFeyVhojxlrm+46y68HA6hr0TcwEssoxNiDEUJQjfPZ/RYA==}
@@ -1373,6 +1379,8 @@ snapshots:
       which: 2.0.2
 
   dateformat@4.6.3: {}
+
+  dayjs@1.11.13: {}
 
   debug@4.4.0:
     dependencies:

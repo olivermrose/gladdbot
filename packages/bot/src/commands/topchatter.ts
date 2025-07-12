@@ -1,12 +1,18 @@
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc.js";
+import timezome from "dayjs/plugin/timezone.js";
 import { sql } from "../db";
 import { defineCommand, log } from "../util";
+
+dayjs.extend(utc);
+dayjs.extend(timezome);
 
 export default defineCommand({
 	name: "topchatter",
 	aliases: ["topchatters", "top10"],
 	async exec(_, ctx) {
-		const today = new Date();
-		const currentDay = today.getDay();
+		const today = dayjs().tz("America/New_York");
+		const currentDay = today.day();
 
 		let daysToSubtract = 0;
 
@@ -16,11 +22,8 @@ export default defineCommand({
 			daysToSubtract = currentDay - 5;
 		}
 
-		const lastFriday = new Date();
-		lastFriday.setDate(today.getDate() - daysToSubtract);
-
-		const weekAgo = new Date(lastFriday);
-		weekAgo.setDate(lastFriday.getDate() - 7);
+		const lastFriday = today.subtract(daysToSubtract, "day");
+		const weekAgo = lastFriday.subtract(1, "week");
 
 		log.info({ today, lastFriday, weekAgo });
 
@@ -34,15 +37,8 @@ export default defineCommand({
 			LIMIT 10
 		`;
 
-		const lastFridayDate = lastFriday.toLocaleString("en-US", {
-			dateStyle: "short",
-			timeZone: "America/New_York",
-		});
-
-		const weekAgoDate = weekAgo.toLocaleString("en-US", {
-			dateStyle: "short",
-			timeZone: "America/New_York",
-		});
+		const lastFridayDate = lastFriday.format("M/D/YYYY");
+		const weekAgoDate = weekAgo.format("M/D/YYYY");
 
 		const top = rows.map((row, i) => `${i + 1}. ${row.username} (${row.count})`).join(" | ");
 

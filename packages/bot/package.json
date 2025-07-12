@@ -25,6 +25,7 @@
 		"@twurple/auth": "^7.2.1",
 		"@twurple/easy-bot": "^7.2.1",
 		"croner": "^9.0.0",
+		"dayjs": "^1.11.13",
 		"pino": "^9.6.0",
 		"postgres": "^3.4.5",
 		"redis": "^4.7.0"
