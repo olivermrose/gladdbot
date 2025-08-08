@@ -7,6 +7,7 @@ import aistats from "./aistats";
 import emoteusage from "./emoteusage";
 import { nocam, nocamadd } from "./nocam";
 import topchatter from "./topchatter";
+import topmonth from "./topmonth";
 
 export default [
 	ai,
@@ -19,4 +20,5 @@ export default [
 	nocam,
 	nocamadd,
 	topchatter,
+	topmonth,
 ];

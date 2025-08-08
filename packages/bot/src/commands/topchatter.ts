@@ -25,8 +25,6 @@ export default defineCommand({
 		const lastFriday = today.subtract(daysToSubtract, "day");
 		const weekAgo = lastFriday.subtract(1, "week");
 
-		log.info({ today, lastFriday, weekAgo });
-
 		const rows = await sql<{ count: number; username: string }[]>`
 			SELECT count(content), username FROM messages
 			WHERE
