@@ -1,11 +1,14 @@
 import dayjs from "dayjs";
+import timezome from "dayjs/plugin/timezone.js";
 import { sql } from "../db";
 import { defineCommand } from "../util";
+
+dayjs.extend(timezome);
 
 export default defineCommand({
 	name: "topmonth",
 	async exec(_, ctx) {
-		const lastMonth = dayjs().subtract(1, "month");
+		const lastMonth = dayjs().tz("America/New_York").subtract(1, "month");
 		const start = lastMonth.startOf("month");
 		const end = lastMonth.endOf("month");
 

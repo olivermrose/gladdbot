@@ -1,10 +1,8 @@
 import dayjs from "dayjs";
-import utc from "dayjs/plugin/utc.js";
 import timezome from "dayjs/plugin/timezone.js";
 import { sql } from "../db";
-import { defineCommand, log } from "../util";
+import { defineCommand } from "../util";
 
-dayjs.extend(utc);
 dayjs.extend(timezome);
 
 export default defineCommand({
