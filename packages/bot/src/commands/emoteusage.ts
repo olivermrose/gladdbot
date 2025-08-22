@@ -28,7 +28,7 @@ export default defineCommand({
 
 			const top = data.map((emote) => `${emote.username} ${emote.usage}`).join(" | ");
 
-			return ctx.reply(`Top 10 users for ${args[0]}: ${top}`);
+			return ctx.reply(`Top 10 users for ${args[0]} : ${top}`);
 		}
 
 		// !emoteusage <user> <emote>
@@ -50,7 +50,7 @@ export default defineCommand({
 
 		const top = data.map((emote) => `${emote.name} ${emote.usage}`).join(" | ");
 
-		return ctx.reply(`Top 10 emotes for ${user}: ${top}`);
+		return ctx.reply(`Top 10 emotes for ${user} : ${top}`);
 	},
 });
 
