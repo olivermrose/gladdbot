@@ -6,12 +6,13 @@ import ainerd from "./ainerd";
 // import aistats from "./aistats";
 // import emoteusage from "./emoteusage";
 // import { nocam, nocamadd } from "./nocam";
-import roulette from "./roulette";
+import { roulette, rouletteP } from "./roulette";
 // import topchatter from "./topchatter";
 // import topmonth from "./topmonth";
 
 export default [
 	roulette,
+	rouletteP,
 	ai,
 	ainerd,
 	// aidebug,

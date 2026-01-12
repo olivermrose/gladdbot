@@ -2,7 +2,7 @@ import { bot } from "..";
 import { increment } from "../db";
 import { defineCommand } from "../util";
 
-export default defineCommand({
+export const roulette = defineCommand({
 	name: "roulette",
 	userCooldown: 60,
 	async exec(_, ctx) {
@@ -32,5 +32,14 @@ export default defineCommand({
 		} else {
 			// 90% chance
 		}
+	},
+});
+
+export const rouletteP = defineCommand({
+	name: "roulette%",
+	async exec(_, ctx) {
+		return ctx.reply(
+			"Roulette chances: 90% nothing; 5% Clyde 5m timeout; 3% 5s timeout; 1.5% 30s timeout; 0.5% 10m timeout",
+		);
 	},
 });
