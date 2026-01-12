@@ -6,7 +6,7 @@ export const sql = postgres(process.env.POSTGRES_URL!);
 
 export const redis = await createClient({ url: process.env.REDIS_URL }).connect();
 
-type CounterKey = "intervals" | "responses" | "responses_auto" | "responses_mention";
+type CounterKey = "clydes" | "intervals" | "responses" | "responses_auto" | "responses_mention";
 
 export async function increment(counter: CounterKey) {
 	if (process.env.NODE_ENV !== "dev") {

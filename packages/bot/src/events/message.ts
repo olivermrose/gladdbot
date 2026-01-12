@@ -12,8 +12,7 @@ export async function handleMessage(channel: string, user: string, text: string,
 
 	await trackEmotes(text.split(" "), msg.userInfo.userId, user);
 
-	// Chat logic
-	if (/@?gladdbot(?:ai)?/i.test(text)) {
+	if (/@?gladdbot(?:67)?/i.test(text)) {
 		if (msg.isReply) {
 			let chat: Chat;
 

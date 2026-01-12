@@ -23,7 +23,7 @@ interface SystemInstructions {
 }
 
 const defaultParams = {
-	model: process.env.GOOGLE_AI_MODEL ?? "gemini-2.0-flash",
+	model: process.env.GOOGLE_AI_MODEL ?? "gemini-3-flash-preview",
 	config: {
 		systemInstruction: "",
 		safetySettings: [
@@ -64,9 +64,9 @@ export class AI {
 
 	public constructor(
 		public readonly bot: Bot,
-		public readonly instructions: SystemInstructions,
+		public readonly instructions: string,
 	) {
-		defaultParams.config.systemInstruction = instructions.content;
+		defaultParams.config.systemInstruction = instructions;
 
 		this.#initJobs();
 	}

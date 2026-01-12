@@ -49,10 +49,10 @@ export function formatPrompt(message: ChatMessage, history: string[] = []) {
 		user += ` (${badges.join(", ")})`;
 	}
 
-	let prompt = `${user} sent the following prompt\n<PROMPT>${message.text}</PROMPT>`;
+	let prompt = `${user} sent the following prompt\n<prompt>${message.text}</prompt>`;
 
 	if (history.length) {
-		prompt += `\nThese are the last 100 messages sent by them\n<HISTORY>${history.join("\n")}</HISTORY>`;
+		prompt += `\nThese are the last 100 messages sent by them\n<history>${history.join("\n")}</history>`;
 	}
 
 	return prompt;

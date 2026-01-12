@@ -6,6 +6,7 @@ import { fetchEmotes } from "./emotes";
 import { handleMessage } from "./events";
 import { fetchInstructions } from "./instructions";
 import { log } from "./util";
+import { redis } from "./db";
 
 await fetchEmotes();
 
@@ -24,6 +25,6 @@ bot.onConnect(() => log.info("Connected to Twitch"));
 // because we need the ChatMessage object
 bot.chat.onMessage(handleMessage);
 
-const instructions = await fetchInstructions();
+const instructions = (await redis.get("instructions"))!;
 
 export const ai = new AI(bot, instructions);

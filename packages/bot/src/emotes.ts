@@ -7,19 +7,17 @@ export async function fetchEmotes() {
 		method: "post",
 		body: JSON.stringify({
 			query: `
-query {
-  emoteSets {
-    emoteSet(id: "01G1YC2QH80003SZSY7SHK2EDE") {
-	    emotes {
-        items {
-          emote {
-            defaultName
-          }
-        }
-      }
-  	}
-  }
-}
+				query {
+					emoteSets {
+						emoteSet(id: "01G1YC2QH80003SZSY7SHK2EDE") {
+							emotes {
+								items {
+									alias
+								}
+							}
+						}
+					}
+				}
 		`,
 		}),
 	});
@@ -27,8 +25,8 @@ query {
 	const { data } = await response.json();
 	const { items } = data.emoteSets.emoteSet.emotes;
 
-	for (const { emote } of items) {
-		emotes.add(emote.defaultName);
+	for (const { alias } of items) {
+		emotes.add(alias);
 	}
 }
 
