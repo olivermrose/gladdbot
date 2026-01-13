@@ -1,27 +1,27 @@
 import ai from "./ai";
 // import aidebug from "./aidebug";
 // import aihelp from "./aihelp";
-import ainerd from "./ainerd";
+// import ainerd from "./ainerd";
 // import aiping from "./aiping";
 // import aistats from "./aistats";
-// import emoteusage from "./emoteusage";
+import emoteusage from "./emoteusage";
 // import { nocam, nocamadd } from "./nocam";
 import { roulette, rouletteP } from "./roulette";
-// import topchatter from "./topchatter";
-// import topmonth from "./topmonth";
+import topchatter from "./topchatter";
+import topmonth from "./topmonth";
 
 export default [
-	roulette,
-	rouletteP,
 	ai,
-	ainerd,
+	// ainerd,
 	// aidebug,
 	// aihelp,
 	// aiping,
 	// aistats,
-	// emoteusage,
+	emoteusage,
 	// nocam,
 	// nocamadd,
-	// topchatter,
-	// topmonth,
+	roulette,
+	rouletteP,
+	topchatter,
+	topmonth,
 ];

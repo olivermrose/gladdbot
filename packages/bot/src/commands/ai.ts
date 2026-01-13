@@ -7,7 +7,7 @@ export default defineCommand({
 	globalCooldown: 10,
 	userCooldown: 15,
 	async exec(content, ctx) {
-		if (!content) return;
+		if (!content || !ai.enabled) return;
 
 		log.info(
 			{

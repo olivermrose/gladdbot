@@ -50,6 +50,7 @@ const defaultParams = {
 } satisfies Omit<GenerateContentParameters, "contents">;
 
 export class AI {
+	public readonly enabled = process.env.AI_ENABLED === "1";
 	public readonly sdk = new GoogleGenAI({ apiKey: process.env.GOOGLE_AI_KEY! });
 
 	public readonly chats = new Map<string, Chat>();
@@ -68,7 +69,9 @@ export class AI {
 	) {
 		defaultParams.config.systemInstruction = instructions;
 
-		this.#initJobs();
+		if (this.enabled) {
+			this.#initJobs();
+		}
 	}
 
 	public async generate(content: string, model = defaultParams.model) {
@@ -146,7 +149,7 @@ export class AI {
 	#initJobs() {
 		const options = { timezone: "America/New_York" };
 
-		this.#cronJobs.add(new Cron("*/20 * * * *", this.flush.bind(this), options));
+		this.#cronJobs.add(new Cron("*/20 * * * *", () => this.flush(), options));
 
 		if (this.#autoSendEnabled) {
 			this.#cronJobs.add(new Cron("*/5 * * * *", this.#autoSend.bind(this), options));

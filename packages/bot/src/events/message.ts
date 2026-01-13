@@ -5,12 +5,14 @@ import { log } from "../util";
 import type { ChatMessage } from "../";
 import type { Chat } from "../chat";
 
-const BOT_USERNAMES = ["blerp", "fossabot", "gladdbotai", "nightbot"];
+const BOT_USERNAMES = ["blerp", "fossabot", "gladdbot67", "nightbot"];
 
 export async function handleMessage(channel: string, user: string, text: string, msg: ChatMessage) {
 	if (BOT_USERNAMES.includes(user) || text.startsWith("!")) return;
 
 	await trackEmotes(text.split(" "), msg.userInfo.userId, user);
+
+	if (!ai.enabled) return;
 
 	if (/@?gladdbot(?:67)?/i.test(text)) {
 		if (msg.isReply) {
