@@ -32,7 +32,7 @@ export const roulette = defineCommand({
 
 			await bot.say(
 				"xClyde",
-				`@xClyde You just timed out for 5 minutes in Gladd's chat. RIPBOZO Clyde counter: ${clydes}`,
+				`@xClyde You just got timed out for 5 minutes in Gladd's chat. RIPBOZO Clyde counter: ${clydes}`,
 			);
 		} else {
 			// 90% chance
