@@ -29,6 +29,11 @@ export const roulette = defineCommand({
 
 			const clydes = await increment("clydes");
 			await ctx.announce(`Clyde got fucked! WAJAJA Clyde counter: ${clydes}`);
+
+			await bot.say(
+				"xClyde",
+				`@xClyde You just timed out for 5 minutes in Gladd's chat. RIPBOZO Clyde counter: ${clydes}`,
+			);
 		} else {
 			// 90% chance
 		}
