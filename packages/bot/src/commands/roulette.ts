@@ -4,7 +4,7 @@ import { defineCommand } from "../util";
 
 export const roulette = defineCommand({
 	name: "roulette",
-	userCooldown: 60,
+	userCooldown: 180,
 	async exec(_, ctx) {
 		const chance = Math.random();
 
@@ -16,9 +16,6 @@ export const roulette = defineCommand({
 			await ctx.timeout(30, "Roulette: 30 second timeout");
 		} else if (chance < 0.05) {
 			// 3% chance
-			await ctx.timeout(5, "Roulette: 5 second timeout");
-		} else if (chance < 0.1) {
-			// 5% chance
 			if (await redis.get("roulette:clyde_cd")) return;
 
 			await redis.set("roulette:clyde_cd", "1", { EX: 300 });
@@ -38,6 +35,9 @@ export const roulette = defineCommand({
 				"xClyde",
 				`@xClyde You just got timed out for 5 minutes in Gladd's chat. RIPBOZO Clyde counter: ${clydes}`,
 			);
+		} else if (chance < 0.1) {
+			// 5% chance
+			await ctx.timeout(5, "Roulette: 5 second timeout");
 		} else {
 			// 90% chance
 		}
