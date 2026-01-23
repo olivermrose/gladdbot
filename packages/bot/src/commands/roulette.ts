@@ -29,7 +29,7 @@ export const roulette = defineCommand({
 			});
 
 			const clydes = await increment("clydes");
-			await ctx.announce(`Clyde got fucked! WAJAJA Clyde counter: ${clydes}`);
+			await ctx.announce(`Clyde got fucked! gladdJAJA Clyde counter: ${clydes}`);
 
 			await bot.say(
 				"xClyde",
