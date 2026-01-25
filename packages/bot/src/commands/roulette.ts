@@ -24,7 +24,7 @@ export const roulette = defineCommand({
 				await ctx.moderation.banUser(process.env.TWITCH_STREAMER_ID!, {
 					user: 114519775,
 					reason: "Roulette: You got Clyded",
-					duration: 300,
+					duration: 10,
 				});
 			});
 
