@@ -6,8 +6,8 @@ import { log } from "./util";
 interface TokenData {
 	access_token: string;
 	refresh_token: string;
-	expires_in: number;
-	obtainment_timestamp: number;
+	expires_at: Date;
+	created_at: Date;
 }
 
 const [data] = await sql<[TokenData]>`
@@ -22,23 +22,29 @@ export const auth = new RefreshingAuthProvider({
 
 auth.onRefresh(async (_, data) => {
 	try {
+		const expiresAt = data.expiresIn
+			? new Date(data.obtainmentTimestamp + data.expiresIn * 1000)
+			: null;
+
 		await sql`
 			INSERT INTO tokens (
 				access_token,
 				refresh_token,
-				expires_in,
-				obtainment_timestamp
+				created_at,
+				expires_at,
 			) VALUES (
 				${data.accessToken},
 				${data.refreshToken},
-				${data.expiresIn},
-				${data.obtainmentTimestamp}
+				${new Date(data.obtainmentTimestamp)},
+				${expiresAt}
 			);
 		`;
 
 		log.info("Auth refreshed");
-	} catch {
-		log.error("Error refreshing auth");
+	} catch (error) {
+		if (error instanceof Error) {
+			log.error(error, "Error refreshing auth");
+		}
 	}
 });
 
@@ -47,8 +53,8 @@ auth.addUser(
 	{
 		accessToken: data.access_token,
 		refreshToken: data.refresh_token,
-		expiresIn: data.expires_in,
-		obtainmentTimestamp: data.obtainment_timestamp,
+		expiresIn: Math.floor((data.expires_at.getTime() - data.created_at.getTime()) / 1000),
+		obtainmentTimestamp: data.created_at.getTime(),
 		scope: [
 			"chat:edit",
 			"chat:read",
