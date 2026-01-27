@@ -4,11 +4,10 @@ use std::sync::Arc;
 
 use anyhow::Result;
 
-use reqwest::Client as ReqwestClient;
 use twitch_api::HelixClient;
 use twitch_irc::message::ServerMessage;
 
-use crate::commands::{Command, CommandRegistry, Context};
+use crate::commands::{Command, Context};
 
 mod commands;
 mod db;
@@ -26,14 +25,15 @@ async fn main() -> Result<()> {
 
     let (mut incoming, irc_client) = irc::init_irc(pg_client.clone());
 
-    let reqwest_client = ReqwestClient::default();
+    let reqwest_client = reqwest::Client::default();
     let helix_client = Arc::new(HelixClient::with_client(reqwest_client));
 
-    // Initialize and register commands
-    let mut registry: CommandRegistry = HashMap::new();
+    let mut registry = HashMap::<String, Box<dyn Command>>::new();
 
-    let roulette_cmd = commands::roulette::roulette_cmd;
-    registry.insert(roulette_cmd.name().to_string(), Box::new(roulette_cmd));
+    for entry in inventory::iter::<commands::CommandRegistration> {
+        let cmd = (entry.factory)();
+        registry.insert(cmd.name().to_string(), cmd);
+    }
 
     let client = irc_client.clone();
 
@@ -59,14 +59,13 @@ async fn main() -> Result<()> {
 
                                 let ctx = Context {
                                     args,
-                                    msg: data,
                                     twitch: helix_client.clone(),
                                     db: pg_client.clone(),
                                     redis: redis_client.clone(),
                                     irc: client.clone(),
                                 };
 
-                                if let Err(e) = cmd.execute(ctx).await {
+                                if let Err(e) = cmd.execute(ctx, data).await {
                                     tracing::error!(%e, "Command executed failed");
                                 }
                             }
@@ -83,7 +82,6 @@ async fn main() -> Result<()> {
     }
 
     handle.await.unwrap();
-    // tokio::signal::ctrl_c().await?;
 
     Ok(())
 }

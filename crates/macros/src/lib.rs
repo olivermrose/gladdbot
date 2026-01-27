@@ -105,9 +105,15 @@ pub fn command(attr: TokenStream, item: TokenStream) -> TokenStream {
                 #mod_only
             }
 
-            async fn execute(&self, ctx: crate::commands::Context) -> anyhow::Result<()> {
-                #name(ctx).await;
+            async fn execute(&self, ctx: crate::commands::Context, msg: crate::commands::PrivmsgMessage) -> anyhow::Result<()> {
+                #name(ctx, msg).await;
                 Ok(())
+            }
+        }
+
+        inventory::submit! {
+            crate::commands::CommandRegistration {
+                factory: || Box::new(#struct_name),
             }
         }
     };

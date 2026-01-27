@@ -25,8 +25,8 @@ impl TokenStorage for DbTokenStorage {
         Ok(UserAccessToken {
             access_token: row.get("access_token"),
             refresh_token: row.get("refresh_token"),
-            created_at: row.get("obtainment_timestamp"),
-            expires_at: row.get("expires_in"),
+            expires_at: row.get("expires_at"),
+            created_at: row.get("created_at"),
         })
     }
 
@@ -36,14 +36,14 @@ impl TokenStorage for DbTokenStorage {
                 r"INSERT INTO tokens (
 					access_token,
 					refresh_token,
-					obtainment_timestamp,
-					expires_in
+					expires_at
+					created_at,
 				) VALUES ($1, $2, $3, $4)",
                 &[
                     &token.access_token,
                     &token.refresh_token,
-                    &token.created_at,
                     &token.expires_at,
+                    &token.created_at,
                 ],
             )
             .await?;
