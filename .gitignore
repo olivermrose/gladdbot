@@ -24,3 +24,8 @@ report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 .env.test
 temp.txt
 instructions.local.txt
+
+
+# Added by cargo
+
+/target

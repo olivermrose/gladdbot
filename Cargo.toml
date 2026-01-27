@@ -1,0 +1,23 @@
+[package]
+name = "gladdbot"
+version = "0.1.0"
+edition = "2024"
+
+[workspace]
+members = ["crates/macros"]
+
+[dependencies]
+anyhow = "1.0.100"
+async-trait = "0.1.89"
+dotenvy = "0.15.7"
+gladdbot_macros = { path = "crates/macros" }
+rand = "0.9.2"
+redis = { version = "1.0.2", features = ["tokio-comp"] }
+reqwest = "0.12"
+serde = { version = "1.0.228", features = ["derive"] }
+tokio = { version = "1.49.0", features = ["full"] }
+tokio-postgres = { version = "0.7.15", features = ["with-chrono-0_4"] }
+tracing = "0.1.44"
+tracing-subscriber = "0.3.22"
+twitch-irc = { version = "5.0.1", features = ["refreshing-token-rustls-native-roots", "with-serde"] }
+twitch_api = { version = "0.7.2", features = ["twitch_oauth2", "helix", "client", "reqwest"] }
