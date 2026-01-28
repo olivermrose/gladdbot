@@ -31,7 +31,7 @@ auth.onRefresh(async (_, data) => {
 				access_token,
 				refresh_token,
 				created_at,
-				expires_at,
+				expires_at
 			) VALUES (
 				${data.accessToken},
 				${data.refreshToken},
